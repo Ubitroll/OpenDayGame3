@@ -13,6 +13,7 @@ public class BaseItem : ScriptableObject
 
     public int Damage;
     public int ArmourPierce;
+    public int ShieldPierce;
     public int AttackSpeed;
     public int LifeSteal;
     public int CriticalDamage;

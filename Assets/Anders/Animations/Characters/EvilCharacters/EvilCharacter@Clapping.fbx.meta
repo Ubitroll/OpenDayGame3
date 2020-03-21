@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 613bd4349368c884ba8988bfd6253b82
+guid: fa9f19c2ba0347044be773df17d01fe2
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
-      74: -7511940380186001488
-    second: Mabbit_Land
+      74: -203655887218126122
+    second: Clapping
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Mabbit_Land
-      takeName: Mabbit_Land
+      name: Clapping
+      takeName: mixamo.com
       internalID: 0
-      firstFrame: 1
-      lastFrame: 35
+      firstFrame: 0
+      lastFrame: 69
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 613bd4349368c884ba8988bfd6253b82
+guid: 071d0512a12a0114a84c709c3d7db725
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
-      74: -7511940380186001488
-    second: Mabbit_Land
+      74: -203655887218126122
+    second: Falling Back Death
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Mabbit_Land
-      takeName: Mabbit_Land
+      name: Falling Back Death
+      takeName: mixamo.com
       internalID: 0
-      firstFrame: 1
-      lastFrame: 35
+      firstFrame: 0
+      lastFrame: 156
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

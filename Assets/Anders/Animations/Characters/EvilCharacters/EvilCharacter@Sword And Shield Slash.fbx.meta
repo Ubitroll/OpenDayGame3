@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 613bd4349368c884ba8988bfd6253b82
+guid: a60a774b74c680944bd051aff09ffa14
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
-      74: -7511940380186001488
-    second: Mabbit_Land
+      74: -203655887218126122
+    second: Sword And Shield Slash
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Mabbit_Land
-      takeName: Mabbit_Land
+      name: Sword And Shield Slash
+      takeName: mixamo.com
       internalID: 0
-      firstFrame: 1
-      lastFrame: 35
+      firstFrame: 0
+      lastFrame: 100
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

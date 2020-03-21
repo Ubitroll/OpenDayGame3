@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: 613bd4349368c884ba8988bfd6253b82
+guid: e38d38d3498a5b242a11d882372601a2
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
-      74: -7511940380186001488
-    second: Mabbit_Land
+      74: -203655887218126122
+    second: Running (1)
+  - first:
+      74: -9121621101649706817
+    second: Sprint
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +38,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Mabbit_Land
-      takeName: Mabbit_Land
+      name: Sprint
+      takeName: mixamo.com
       internalID: 0
-      firstFrame: 1
-      lastFrame: 35
+      firstFrame: 0
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

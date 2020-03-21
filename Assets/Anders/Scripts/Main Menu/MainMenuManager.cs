@@ -8,7 +8,14 @@ public class MainMenuManager : MonoBehaviour
 {
     public GameObject[] MainButtons = new GameObject[3];
     public GameObject[] HeroSelectionUI = new GameObject[3];
+    public GameObject[] SelectedHeroUI = new GameObject[3];
     public GameObject[] HeroButtons = new GameObject[4];
+
+    public List<GameObject> CharactersNotSelected = new List<GameObject>(4);
+
+    public float PickTimer;
+    public bool CountToStart;
+    public Text Timer;
 
     public int CurrentButtonIndex;
 
@@ -30,6 +37,7 @@ public class MainMenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PickTimer = 60;
         moveX = "C" + "moveX";
         moveY = "C" + "moveY";
         horizontal = "C" + "horizontal";
@@ -47,6 +55,36 @@ public class MainMenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (LoadHeroSelection)
+        {
+            if(CountToStart != true)
+            {
+                PickTimer -= Time.fixedDeltaTime;
+                string minutes = Mathf.Floor(PickTimer / 60).ToString("00");
+                string seconds = (PickTimer % 60).ToString("00");
+
+                Timer.text = (string.Format("{0}:{1}", minutes, seconds));
+                if (PickTimer <= 0)
+                {
+                    CountToStart = true;
+                    RandomPick();
+                    InitializeGame();
+                    PickTimer = 3;
+                }
+            }
+            else
+            {
+                PickTimer -= Time.fixedDeltaTime;
+                Timer.text = ((int)PickTimer).ToString();
+                if(PickTimer <= 0)
+                {
+                    SceneManager.LoadScene("MainGame");
+                }
+            }
+        }        
+
+        #region UI Handlers
+
         if (HasClickedMain)
         {
             if(MainButtons[0].transform.localPosition.x < -165)
@@ -131,29 +169,37 @@ public class MainMenuManager : MonoBehaviour
             }
             if (Input.GetKeyDown("joystick button 0"))
             {
-                switch (CurrentButtonIndex)
+                DataTransferer.Instance.PlayerChoice = CharactersNotSelected[CurrentButtonIndex];
+
+                CharactersNotSelected.RemoveAt(CurrentButtonIndex);
+
+                for (int i = 0; i < CharactersNotSelected.Count; i++)
                 {
-                    case 0:
-                        Debug.Log("Hero" + CurrentButtonIndex);
-
-                        break;
-
-                    case 1:
-                        Debug.Log("Hero" + CurrentButtonIndex);
-
-                        break;
-
-                    case 2:
-                        Debug.Log("Hero" + CurrentButtonIndex);
-
-                        break;
-
-                    case 3:
-                        Debug.Log("Hero" + CurrentButtonIndex);
-
-                        break;
+                    Debug.Log(i);
+                    if (DataTransferer.Instance.AI_1_Choice == null)
+                    {
+                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                        DataTransferer.Instance.AI_1_Choice = CharactersNotSelected[RandomChoice];
+                        CharactersNotSelected.RemoveAt(RandomChoice);
+                        i = 0;
+                    }
+                    if (DataTransferer.Instance.AI_2_Choice == null)
+                    {
+                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                        DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
+                        CharactersNotSelected.RemoveAt(RandomChoice);
+                        i = 0;
+                    }
+                    if (DataTransferer.Instance.AI_3_Choice == null)
+                    {
+                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                        DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
+                        CharactersNotSelected.RemoveAt(RandomChoice);
+                        i = 0;
+                    }
                 }
-                SceneManager.LoadScene("MainGame");    
+
+                InitializeGame();    
             }
 
             #region ButtonHandler
@@ -278,8 +324,56 @@ public class MainMenuManager : MonoBehaviour
         }
 
         #endregion
+
+        #endregion
     }
 
+    void InitializeGame()
+    {
+        CountToStart = true;
+        PickTimer = 3;
+
+        for (int i = 0; i < SelectedHeroUI.Length; i++)
+        {
+            SelectedHeroUI[i].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            SelectedHeroUI[i].GetComponent<Image>().sprite = HeroButtons[i].GetComponent<Image>().sprite;
+        }
+    }
+
+    void RandomPick()
+    {
+        for (int i = 0; i < CharactersNotSelected.Count; i++)
+        {
+            if (DataTransferer.Instance.PlayerChoice == null)
+            {
+                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                DataTransferer.Instance.PlayerChoice = CharactersNotSelected[RandomChoice];
+                CharactersNotSelected.RemoveAt(RandomChoice);
+                i = 0;
+            }
+            if (DataTransferer.Instance.AI_1_Choice == null)
+            {
+                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                DataTransferer.Instance.AI_1_Choice = CharactersNotSelected[RandomChoice];
+                CharactersNotSelected.RemoveAt(RandomChoice);
+                i = 0;
+            }
+            if (DataTransferer.Instance.AI_2_Choice == null)
+            {
+                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
+                CharactersNotSelected.RemoveAt(RandomChoice);
+                i = 0;
+            }
+            if (DataTransferer.Instance.AI_3_Choice == null)
+            {
+                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
+                CharactersNotSelected.RemoveAt(RandomChoice);
+                i = 0;
+            }
+        }
+    }
     public void Clicked(string Option)
     {
         HasClickedMain = true;

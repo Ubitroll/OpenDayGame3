@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Spawn_Manager : MonoBehaviour
 {
+    public List<GameObject> Characters = new List<GameObject>();
+
     public GameObject MinionWaveGood, MinionWaveBad;
     public GameObject GoodCrystal, BadCrystal;
     public GameObject RightTurrets, LeftTurrets;
 
     public GameObject RightMinionSpawn, LeftMinionSpawn;
+
+    public GameObject RightBase, LeftBase;
 
     public GameObject RightCrystalSpawn, LeftCrystalSpawn;
 
@@ -36,6 +40,8 @@ public class Spawn_Manager : MonoBehaviour
             //LeftTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = false;
 
             RightMinionSpawn.GetComponent<Team_Assign>().Team = true; //Only need to declare right spawner for the minions to work it out.
+
+            RightBase.GetComponent<Team_Assign>().Team = true;
         }
         if(AssignCrystalSpawn == 0)
         {
@@ -51,6 +57,8 @@ public class Spawn_Manager : MonoBehaviour
             //LeftTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = true;
 
             RightMinionSpawn.GetComponent<Team_Assign>().Team = false; //Only need to declare right spawner for the minions to work it out.
+
+            RightBase.GetComponent<Team_Assign>().Team = false;
         }
     }
 
@@ -68,6 +76,16 @@ public class Spawn_Manager : MonoBehaviour
             GameObject Minion_Wave_Bad = Instantiate(MinionWaveBad, new Vector3(RightMinionSpawn.transform.position.x, RightMinionSpawn.transform.position.y, RightMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
         }
     }
+    void SpawnAllCharacters()
+    {
+
+    }
+
+    void StartGame()
+    {
+        SpawnMinionWave();
+    }
+
 
     private void Update()
     {
