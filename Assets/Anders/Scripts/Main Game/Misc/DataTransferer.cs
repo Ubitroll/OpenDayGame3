@@ -27,8 +27,4 @@ public class DataTransferer : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); 
     }
 
-    void Update()
-    {
-        
-    }
 }
