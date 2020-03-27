@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: -2028386333890490689}
   m_Layer: 0
   m_Name: Good Crystal
-  m_TagString: Untagged
+  m_TagString: PowerSource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -146,7 +146,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3296530954429217945}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 2.4460742, y: 3.9028444, z: 2.0102682}

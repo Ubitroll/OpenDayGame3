@@ -20,7 +20,14 @@ public class Minion_Detection : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<Team_Assign>().Team != this.gameObject.GetComponentInParent<Team_Assign>().Team)
             {
-                this.gameObject.GetComponentInParent<Minion>().DetectedEnemies.Remove(collision.gameObject);
+                for(int i = 0; i < this.gameObject.GetComponentInParent<Minion>().DetectedEnemies.Count;i++)
+                {
+                    if(this.gameObject.GetComponentInParent<Minion>().DetectedEnemies[i] == collision.gameObject)
+                    {
+                        this.gameObject.GetComponentInParent<Minion>().DetectedEnemies.RemoveAt(i);
+                        return;
+                    }
+                }
             }
         }
     }

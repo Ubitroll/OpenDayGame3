@@ -15,6 +15,7 @@ public class Minion : MonoBehaviour
     private float Death_Timer;
     [SerializeField]
     private float Distance;
+    public GameObject Target;
 
 
     public bool Team;
@@ -37,7 +38,35 @@ public class Minion : MonoBehaviour
     }
 
     private void Update()
-    {
+    {        
+        for(int i = 0; i < DetectedEnemies.Count; i++)
+        {
+            if(DetectedEnemies[i] == false)
+            {
+                DetectedEnemies.RemoveAt(i);
+            }
+        }
+
+        foreach (GameObject Targets in DetectedEnemies)
+        {
+            if (Target == null)
+            {
+                Target = Targets;
+            }
+            else
+            {
+                if (Vector3.Distance(this.gameObject.transform.position, Targets.transform.position) < Vector3.Distance(this.gameObject.transform.position, Target.transform.position))
+                {
+                    Target = Targets;
+                }
+            }
+        }
+
+        if (Target == false && DetectedEnemies.Count != 0)
+        {
+            Target = DetectedEnemies[0];
+        }
+
         if (DetectedEnemies.Count != 0)
         {
             if (DetectedEnemies[0] == null)
@@ -75,9 +104,9 @@ public class Minion : MonoBehaviour
                 }
                 else
                 {
-                    Agent.SetDestination(DetectedEnemies[0].transform.position);
+                    Agent.SetDestination(Target.transform.position);
 
-                    Distance = Vector3.Distance(this.gameObject.transform.position, DetectedEnemies[0].transform.position);
+                    Distance = Vector3.Distance(this.gameObject.transform.position, Target.transform.position);
 
                     if(Distance <= 1.2f)
                     { 
@@ -91,7 +120,7 @@ public class Minion : MonoBehaviour
 
                 Controller.SetFloat("Action", 0.33f);
                 
-                transform.LookAt(DetectedEnemies[0].transform);
+                transform.LookAt(Target.transform);
 
                 break;
 
@@ -110,20 +139,27 @@ public class Minion : MonoBehaviour
 
     public void Melee_Hit()
     {
-        string Target = DetectedEnemies[0].gameObject.tag;
 
-        Debug.Log("Hitting" + Target);
-
-        switch (Target)
+        switch (Target.tag)
         {
             case "Minion":
 
-                DetectedEnemies[0].gameObject.GetComponent<Minion>().Health -= Damage;
+                Target.gameObject.GetComponent<Minion>().Health -= Damage;
 
-                if (DetectedEnemies[0].gameObject.GetComponent<Minion>().Health <= 0)
+                if (Target.gameObject.GetComponent<Minion>().Health <= 0)
                 {
-                    DetectedEnemies[0].gameObject.GetComponent<Minion>().Action_State = 0;
-                    DetectedEnemies.RemoveAt(0);
+                    DetectedEnemies.Remove(Target);
+                }
+
+                break;
+
+            case "Character":
+
+                Target.gameObject.GetComponent<BaseCharacter>().CurrentHealth -= Damage;
+
+                if (Target.gameObject.GetComponent<BaseCharacter>().CurrentHealth <= 0)
+                {
+                    DetectedEnemies.Remove(Target);
                 }
 
                 break;

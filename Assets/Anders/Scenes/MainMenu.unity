@@ -106,7 +106,7 @@ NavMeshSettings:
     serializedVersion: 2
     agentTypeID: 0
     agentRadius: 0.5
-    agentHeight: 2
+    agentHeight: 5
     agentSlope: 45
     agentClimb: 0.4
     ledgeDropHeight: 0
@@ -1335,10 +1335,10 @@ MonoBehaviour:
   - {fileID: 1905203499}
   - {fileID: 1316628086}
   CharactersNotSelected:
-  - {fileID: -927199367670048503, guid: 613bd4349368c884ba8988bfd6253b82, type: 3}
+  - {fileID: 4623673011276552426, guid: fd12ebfb726651f4a93ca524e79ef387, type: 3}
   - {fileID: 4813729192802945357, guid: eb9d96ee9584eec4cac260debada8ca2, type: 3}
-  - {fileID: 100018, guid: fd7d68a65822e4a44a9ef78850e64cfc, type: 3}
-  - {fileID: 1999141217743858, guid: fd921613d01afe147bd4484079e12889, type: 3}
+  - {fileID: 8198764313708893909, guid: 1216ca0bba2148141885a9980c79931c, type: 3}
+  - {fileID: 3163418579229574973, guid: fdc4ca55b18cdaa4e969d90f4454ae1f, type: 3}
   PickTimer: 0
   CountToStart: 0
   Timer: {fileID: 703218313}

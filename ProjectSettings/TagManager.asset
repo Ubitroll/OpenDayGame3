@@ -11,6 +11,8 @@ TagManager:
   - Turret
   - Minion
   - HoverIndicator
+  - PowerSource
+  - Shop
   layers:
   - Default
   - TransparentFX

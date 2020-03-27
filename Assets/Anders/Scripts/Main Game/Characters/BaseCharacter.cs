@@ -10,8 +10,9 @@ public class BaseCharacter : MonoBehaviour
 
     private int Level;
 
-    private float CurrentHealth;
-    private float CurrentMaxHealth;
+    [SerializeField]
+    public float CurrentHealth;
+    public float CurrentMaxHealth;
     public float BaseMaxHealth;
 
     private float CurrentHealthRegen;
@@ -56,27 +57,37 @@ public class BaseCharacter : MonoBehaviour
 
     private NavMeshAgent Agent;
 
-    [SerializeField]
-    private List<GameObject> DetectedObjectives = new List<GameObject>();
-    [SerializeField]
-    private List<GameObject> DetectedEntities = new List<GameObject>();
-    [SerializeField]
-    private List<GameObject> DetectedEnemies = new List<GameObject>();
-    [SerializeField]
-    private List<GameObject> DetectedAllies = new List<GameObject>();
+    public List<GameObject> DetectedObjectives = new List<GameObject>();
+    public List<GameObject> DetectedEntities = new List<GameObject>();
+    public List<GameObject> DetectedEnemies = new List<GameObject>();
+    public List<GameObject> DetectedAllies = new List<GameObject>();
+
+    public GameObject Target;
 
     private int WhichList; //0 = Objectives : 1 = Entities : 2 = EnemyCharacters. Used to different the action when attacking due to targetting.
 
-    private GameObject EnemyCrystal;
+    public GameObject EnemyCrystal;
 
-    private GameObject HomeBase;
+    public GameObject HomeBase;
 
     #region State Vars
     [SerializeField]
     private int AIStateValue;
     public enum AIState {Idle, Search, Chase, Farm, ObjectPush, ReturnToBase, Attack, Celebrate, Retreat};
 
+    public float StoppingDistance;
+
     #endregion
+
+    #endregion
+
+    #region Misc Vars
+
+    public float DeathTimer, TPTimer;
+
+    public bool IsDead;
+
+    public GameObject HomePowerSource;
 
     #endregion
 
@@ -90,112 +101,299 @@ public class BaseCharacter : MonoBehaviour
 
     #endregion
 
+    //debug vars
+    public float show;
+
     public bool IsInvisible;
     void Start()
     {
-        CurrentHealth = 800;
+        TPTimer = 3;
+        CurrentHealth = BaseMaxHealth;
+        CurrentMaxHealth = BaseMaxHealth;
+        CurrentWeaponPower = BaseWeaponPower;
         Controller = this.gameObject.GetComponent<Animator>();
         Agent = this.gameObject.GetComponent<NavMeshAgent>();
 
-        //EnemyCrystal = Enemy_Crystal_Singleton.Instance.gameObject;
+        if (this.gameObject.GetComponent<Team_Assign>().Team == true)
+        {
+            EnemyCrystal = Enemy_Crystal_Singleton.Instance.gameObject;
+            HomePowerSource = Good_Crystal_Singleton.Instance.gameObject;
+        }
+        else
+        {
+            EnemyCrystal = Good_Crystal_Singleton.Instance.gameObject;
+            HomePowerSource = Enemy_Crystal_Singleton.Instance.gameObject;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(EnemyCrystal == null)
-        {
-            EnemyCrystal = Enemy_Crystal_Singleton.Instance.gameObject;
-        }
-
         AIConditionChecks();
 
+        if (CurrentHealth < CurrentMaxHealth / 2)
+        {
+            AIStateValue = 2;
+            return;
+        }
+        #region Checking Missing List Objects
+
+        for (int i = 0; i < DetectedEnemies.Count; i++)
+        {
+            if (DetectedEnemies[i] == false)
+            {
+                DetectedEnemies.RemoveAt(i);
+            }
+        }
+
+        for (int i = 0; i < DetectedEntities.Count; i++)
+        {
+            if (DetectedEntities[i] == false)
+            {
+                DetectedEntities.RemoveAt(i);
+            }
+        }
+
+        #endregion
+
+        if(Target == null)
+        {
+            AIStateValue = 3;
+        }
+
+        if (Target != null)
+        {
+            if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) > 10)
+            {
+                if (Target.tag != "PowerSource")
+                {
+                    Target = null;
+                    Agent.isStopped = true;
+                }
+            }
+            CheckTargetHealth();
+            show = Vector3.Distance(this.gameObject.transform.position, Target.transform.position);
+        }
+        
+        if(CurrentHealth <= 0)
+        {
+            if (!IsDead)
+            {
+                CharacterDies();
+                DetectedEnemies.Clear();
+                DetectedAllies.Clear();
+                DetectedEntities.Clear();
+                Target = null;
+                AIStateValue = 7;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if(DeathTimer > 0)
+        {
+            DeathTimer -= Time.fixedDeltaTime;
+
+            AIStateValue = 7;
+
+            if(DeathTimer <= 0)
+            {
+                IsDead = false;
+                AIStateValue = 3;
+                Agent.isStopped = false;
+                this.gameObject.GetComponent<CapsuleCollider>().enabled = true;
+            }
+        }
+
+
+        if(EnemyCrystal == null)
+        {
+            if(this.gameObject.GetComponent<Team_Assign>().Team == true)
+            {
+                EnemyCrystal = Enemy_Crystal_Singleton.Instance.gameObject;
+            }
+            else
+            {
+                EnemyCrystal = Good_Crystal_Singleton.Instance.gameObject;
+            }
+        }
+
+        if (IsInvisible)
+        {
+        }
+        else
+        {
+        }
+    }
+    void AIConditionChecks()
+    {
         switch (AIStateValue)
         {
-            case 0:
+            case 0: //Waiting / Regening
 
-                break;
+             #region 0
 
-            case 1:
-
-                break;
-
-            case 2:
-
-                if (DetectedEnemies[0] == null)
+                if (DetectedEnemies.Count == 0 && DetectedEntities.Count == 0)
                 {
-                    Debug.Log("No enemies detected ERROR");
-                    AIStateValue = 4;
-                    ActionValue = 1;
+                    if(CurrentHealth >= CurrentMaxHealth / 3)
+                    { //Add Start game bool here + timer to have count down!!!
+                        AIStateValue = 3; //Default state should be push objective.
+                        return;
+                    }
+                    else
+                    {
+                        AIStateValue = 2; //Retreating
+                    }
+                }
+
+
+                break;
+
+            #endregion
+
+            case 1: //Chase Target
+
+             #region 1
+
+                if (DetectedEnemies.Count == 0)
+                {
+                    Target = DetectedEntities[0];
+                    Controller.SetFloat("Action", 0.1f);
+                    Agent.SetDestination(Target.transform.position);
+                }
+                else
+                {
+                   Target = DetectedEnemies[0];
+                   Controller.SetFloat("Action", 0.1f);
+                   Agent.SetDestination(Target.transform.position);
+                }
+
+                if(DetectedObjectives.Count == 0)
+                {
                     return;
                 }
                 else
                 {
-                    ActionValue = 1;
-                    Agent.SetDestination(DetectedEnemies[0].transform.position);
-                    return;
+                    
                 }
 
                 break;
 
-            case 3:
-                if(CurrentHealth >= CurrentMaxHealth / 3)
-                {
-                    Agent.SetDestination(DetectedEntities[0].transform.position);
-                    ActionValue = 1;
+            #endregion
 
-                    if (Vector3.Distance(this.gameObject.transform.position, DetectedEntities[0].transform.position) <= 0.5f)
+            case 2: //Retreat / TP Home
+
+             #region 2
+
+                if (DetectedEnemies.Count == 0 && DetectedEntities.Count == 0)
+                {
+                    Controller.SetFloat("Action", 0);
+                    if(TPTimer > 0)
                     {
-                        WhichList = 1;
-                        AIStateValue = 6;
-                        ActionValue = 3;
+                        TPTimer -= Time.fixedDeltaTime;
+                        if(TPTimer <= 0)
+                        {
+                            this.gameObject.transform.position = HomeBase.transform.position;
+                        }
+                    }
+                }
+
+                if(DetectedEnemies.Count != 0)
+                {
+                    Debug.Log("Setting Target To base");
+                    Target = HomePowerSource;
+                    Agent.SetDestination(Target.transform.position);
+                    Controller.SetFloat("Action", 0.1f);
+                    return;
+                }
+
+                if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
+                {
+                    CurrentHealth += (int)(CurrentMaxHealth * 0.2); //Regenning when at base
+                    if(CurrentHealth > CurrentMaxHealth)
+                    {
+                        CurrentHealth = CurrentMaxHealth;
+                    }
+
+                    if (CurrentHealth == CurrentMaxHealth)
+                    {
+                        AIStateValue = 4;
+                        TPTimer = 3;
                         return;
                     }
                 }
-                else
-                {
-                    if(DetectedEnemies.Count == 0)
-                    {
-                        Agent.SetDestination(DetectedEntities[0].transform.position);
-                        ActionValue = 1;
 
-                        if (Vector3.Distance(this.gameObject.transform.position, DetectedEntities[0].transform.position) <= 0.5f)
+                break;
+
+            #endregion
+
+            case 3: //ObjectivePush
+
+             #region 3
+
+                if (DetectedEnemies.Count == 0 && DetectedEntities.Count == 0 && DetectedObjectives.Count == 0)
+                {
+                    Target = EnemyCrystal;
+                    Controller.SetFloat("Action", 0.1f);
+                    Agent.SetDestination(Target.transform.position);
+                }
+
+                if (DetectedEntities.Count != 0)
+                {
+                    Target = DetectedEntities[0];
+                    Controller.SetFloat("Action", 0.1f);
+                    Agent.SetDestination(Target.transform.position);
+                    if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
+                    {
+                        AIStateValue = 4;
+                    }
+                }
+
+                if (DetectedObjectives.Count != 0)
+                {
+                    Target = DetectedObjectives[0];
+                    Controller.SetFloat("Action", 0.1f);
+                    Agent.SetDestination(Target.transform.position);
+                    if(Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
+                    {
+                        AIStateValue = 4;
+                    }
+                }
+
+                if (DetectedEnemies.Count != 0)
+                {
+                    if (CurrentHealth >= CurrentMaxHealth / 2)
+                    {
+                        Target = DetectedEnemies[0];
+                        Controller.SetFloat("Action", 0.1f);
+                        Agent.SetDestination(Target.transform.position);
+                        if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
                         {
-                            WhichList = 1;
-                            ActionValue = 3;
-                            AIStateValue = 6;
-                            return;
+                            AIStateValue = 4;
                         }
                     }
                     else
                     {
-                        AIStateValue = 8;
+                        AIStateValue = 2;
                         return;
                     }
                 }
 
                 break;
 
-            case 4:
+            #endregion
 
-                if(DetectedObjectives.Count == 0)
-                {
-                    Agent.SetDestination(EnemyCrystal.transform.position); //Objective Push
-                    ActionValue = 1;
-                }
-                else
-                {
-                    Agent.SetDestination(DetectedObjectives[0].transform.position);
+            case 4: //Fighting
 
-                    if (Vector3.Distance(this.gameObject.transform.position, DetectedObjectives[0].transform.position) <= 0.5f)
-                    {
-                        WhichList = 0;
-                        ActionValue = 3;
-                        AIStateValue = 6;
-                    }
-                }
-                
+             #region 4
+
+                Controller.SetFloat("Action", 0.3f);
+
                 break;
+
+            #endregion
 
             case 5:
 
@@ -207,65 +405,15 @@ public class BaseCharacter : MonoBehaviour
 
             case 7:
 
-                break;
-
-            case 8:
-
-                if(DetectedEnemies.Count == 0)
-                {
-                    AIStateValue = 5;
-                    return;
-                }
-                else
-                {
-                    Agent.SetDestination(HomeBase.transform.position);
-                    ActionValue = 1;
-                    if (DetectedEnemies.Count == 0)
-                    {
-                        AIStateValue = 5;
-                        ActionValue = 0;
-                        TPReturnTimer -= Time.fixedDeltaTime;
-                        if(TPReturnTimer <= 0)
-                        {
-                            this.gameObject.transform.position = HomeBase.transform.position;
-                        }
-                        return;
-                    }
-                }
+                Controller.SetFloat("Action", 0.7f);
 
                 break;
         }
 
-        ChangeAnimationState();
-
-        if (IsInvisible)
+        if (CurrentHealth <= 0 && DeathTimer <= 0)
         {
-        }
-        else
-        {
-        }
-    }
-    void AIConditionChecks()
-    {
-        if(CurrentHealth <= CurrentMaxHealth / 3)
-        {
-            AIStateValue = 5; //Return to base.
-            return;
-        }
-
-        if (DetectedEntities.Count == 0 && DetectedEnemies.Count == 0 && DetectedObjectives.Count == 0)
-        {
-            if(CurrentHealth >= CurrentMaxHealth / 3)
-            {
-                AIStateValue = 4; //Push Objectives
-                return;
-            }
-            else
-            {
-                //Add in retreat if needed to get to save distance to TP.
-                AIStateValue = 5; //ReturnToBase.
-                return;
-            }
+            Debug.Log("Firing");
+            AIStateValue = 7;
         }
     }
     void ChangeAnimationState()
@@ -341,38 +489,81 @@ public class BaseCharacter : MonoBehaviour
     {
        foreach(BaseItem Item in PlayerInventory.Instance.GetComponent<PlayerInventory>().Inventory)
        {
-            
+            CurrentMaxHealth = BaseMaxHealth + Item.Health;
+            CurrentHealthRegen = BaseHealthRegen + Item.HealthRegen;
+
+            CurrentManaRegen = BaseManaRegen + Item.ManaRegen;
        }
-    }
-
-
-
-    public void BasicAttack()
-    {
-        switch (WhichList)
-        {
-            case 0:
-
-                DetectedObjectives[0].GetComponent<Turret_Base>().Health -= (int)CurrentWeaponPower;
-
-                break;
-
-            case 1:
-
-                DetectedEntities[0].GetComponent<Turret_Base>().Health -= (int)CurrentWeaponPower;
-
-                break;
-
-            case 2:
-
-                DetectedEnemies[0].GetComponent<Turret_Base>().Health -= (int)CurrentWeaponPower;
-
-                break;
-        }
     }
 
     public void AbilityAttack()
     {
 
+    }
+    public void BasicAttack()
+    {
+        if(Target != null)
+        {
+            switch (Target.tag)
+            {
+                case "Character":
+                    Controller.SetFloat("Action", 0.3f);
+                    Target.GetComponent<BaseCharacter>().CurrentHealth -= CurrentWeaponPower;
+
+                    break;
+
+                case "Minion":
+
+                    Controller.SetFloat("Action", 0.3f);
+                    Target.GetComponent<Minion>().Health -= (int)CurrentWeaponPower;
+
+                    break;
+
+                case "Turret":
+
+                    Controller.SetFloat("Action", 0.3f);
+                    Target.GetComponent<Turret_Base>().Health -= (int)CurrentWeaponPower;
+
+                    break;
+            }
+        }   
+    }
+
+    public void CharacterDies()
+    {
+        Controller.SetFloat("Action", 0.7f);
+        Debug.Log("Dead" + this.gameObject.name);
+        this.gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        DeathTimer = 5;
+        IsDead = true;       
+        this.gameObject.transform.position = HomeBase.transform.position;
+        Agent.isStopped = true;
+        CurrentHealth = CurrentMaxHealth;
+    }
+
+    void CheckTargetHealth()
+    {
+        switch (Target.tag)
+        {
+            case "Character":
+
+                if(Target.GetComponent<BaseCharacter>().CurrentHealth <= 0)
+                {
+                    DetectedEnemies.Remove(Target);
+                    Target = null;
+                }
+
+                break;
+
+            case "Minion":
+
+                if (Target.GetComponent<Minion>().Health <= 0)
+                {
+                    DetectedEntities.Remove(Target);
+                    Target = null;
+                }
+
+                break;
+        }
     }
 }
