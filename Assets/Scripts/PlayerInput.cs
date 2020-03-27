@@ -26,7 +26,6 @@ public class PlayerInput : MonoBehaviour
     // Floats
     // Used to change the speed of certain actions
     public float runSpeed = 0;
-    public float sensitivityAiming = 0;
     
     // Gameobjects
     // 
