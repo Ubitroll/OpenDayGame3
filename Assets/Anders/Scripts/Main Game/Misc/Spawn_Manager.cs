@@ -16,9 +16,17 @@ public class Spawn_Manager : MonoBehaviour
 
     public GameObject RightCrystalSpawn, LeftCrystalSpawn;
 
+    public float MinionSpawnTimer;
+
     private void Awake()
     {
         AssigningTeam();
+        MinionSpawnTimer = 20;
+    }
+
+    private void Start()
+    {
+        StartGame();
     }
 
     void AssigningTeam() //(True/1) = Right (False/0) = Left.
@@ -44,9 +52,9 @@ public class Spawn_Manager : MonoBehaviour
             RightBase.GetComponent<Team_Assign>().Team = true;
 
             DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
-            DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
+            //DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
+            //DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
+            //DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
         }
         if(AssignCrystalSpawn == 0)
         {
@@ -66,15 +74,15 @@ public class Spawn_Manager : MonoBehaviour
             RightBase.GetComponent<Team_Assign>().Team = false;
 
             DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
-            DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
-            DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
+            //DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
+            //DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
+            //DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
         }
 
         DataTransferer.Instance.PlayerChoice.GetComponent<Team_Assign>().Team = true;
-        DataTransferer.Instance.AI_1_Choice.GetComponent<Team_Assign>().Team = true;
-        DataTransferer.Instance.AI_2_Choice.GetComponent<Team_Assign>().Team = false;
-        DataTransferer.Instance.AI_3_Choice.GetComponent<Team_Assign>().Team = false;
+        DataTransferer.Instance.AI_1_Choice.GetComponent<Team_Assign>().Team = false;
+        //DataTransferer.Instance.AI_2_Choice.GetComponent<Team_Assign>().Team = false;
+        //DataTransferer.Instance.AI_3_Choice.GetComponent<Team_Assign>().Team = false;
     }
 
 
@@ -96,16 +104,16 @@ public class Spawn_Manager : MonoBehaviour
         if(RightBase.GetComponent<Team_Assign>().Team == true)
         {
             GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
         }
         else
         {
             GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
         }
     }
 
@@ -117,10 +125,12 @@ public class Spawn_Manager : MonoBehaviour
 
 
     private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
+    {        
+        MinionSpawnTimer -= Time.fixedDeltaTime;
+        if(MinionSpawnTimer <= 0)
         {
-            StartGame();
+            SpawnMinionWave();
+            MinionSpawnTimer = 20;
         }
     }
 }

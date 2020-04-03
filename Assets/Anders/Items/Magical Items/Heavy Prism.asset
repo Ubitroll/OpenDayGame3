@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Heavy Prism
   Description: +45 Magic Damage
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 202
+  ItemIcon: {fileID: 21300000, guid: 46b717f1bf8df7c4baae37cffd45b63c, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 1050

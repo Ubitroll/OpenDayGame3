@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Minion's Foot
   Description: +10% Critical Damage and +10% Critical Chance
-  ID: 13
-  ItemIcon: {fileID: 0}
+  ID: 131
+  ItemIcon: {fileID: 21300000, guid: 68dc14c1e57a1e342b6c89c6d7f75836, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 10
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 300

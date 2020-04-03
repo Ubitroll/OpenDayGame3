@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PointSystem : MonoBehaviour
 {
     public int AllyPoints, EnemyPoints;
@@ -39,11 +39,21 @@ public class PointSystem : MonoBehaviour
 
         if (AllyPoints >= MaxPoints)
         {
-            Debug.Log("Ally Wins");
+            DataTransferer.Instance.HasWon = true;
+            SceneManager.LoadScene("Leaderboard");
+            AssignPlayerPoints();
+
         }
         if(EnemyPoints >= MaxPoints)
         {
-            Debug.Log("Enemy Wins");
+            DataTransferer.Instance.HasWon = false;
+            SceneManager.LoadScene("Leaderboard");
+            AssignPlayerPoints();
         }
+    }
+
+    void AssignPlayerPoints()
+    {
+        DataTransferer.Instance.CurrentPlayerScore = 50;
     }
 }

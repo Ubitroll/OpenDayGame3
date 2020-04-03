@@ -26,6 +26,8 @@ public class Minion : MonoBehaviour
 
     public List<GameObject> DetectedEnemies = new List<GameObject>();
 
+    public GameObject EnemyCrystal;
+
 
     private void Start()
     {
@@ -35,55 +37,21 @@ public class Minion : MonoBehaviour
         Agent = this.gameObject.GetComponent<NavMeshAgent>();
         Health = 200;
         Damage = 15;
+
+        if (this.gameObject.GetComponent<Team_Assign>().Team == true)
+        {
+            EnemyCrystal = Enemy_Crystal_Singleton.Instance.gameObject;
+        }
+        else
+        {
+            EnemyCrystal = Good_Crystal_Singleton.Instance.gameObject;
+        }
     }
 
     private void Update()
-    {        
-        for(int i = 0; i < DetectedEnemies.Count; i++)
-        {
-            if(DetectedEnemies[i] == false)
-            {
-                DetectedEnemies.RemoveAt(i);
-            }
-        }
+    {
 
-        foreach (GameObject Targets in DetectedEnemies)
-        {
-            if (Target == null)
-            {
-                Target = Targets;
-            }
-            else
-            {
-                if (Vector3.Distance(this.gameObject.transform.position, Targets.transform.position) < Vector3.Distance(this.gameObject.transform.position, Target.transform.position))
-                {
-                    Target = Targets;
-                }
-            }
-        }
-
-        if (Target == false && DetectedEnemies.Count != 0)
-        {
-            Target = DetectedEnemies[0];
-        }
-
-        if (DetectedEnemies.Count != 0)
-        {
-            if (DetectedEnemies[0] == null)
-            {
-                DetectedEnemies.RemoveAt(0);
-            }
-        }
-
-        if (DetectedEnemies.Count == 0 || DetectedEnemies == null)
-        {
-            Action_State = 0;
-        }
-
-        if(Health <= 0)
-        {
-            Action_State = 3;
-        }
+        Conditions();
 
         switch (Action_State)
         {
@@ -108,7 +76,7 @@ public class Minion : MonoBehaviour
 
                     Distance = Vector3.Distance(this.gameObject.transform.position, Target.transform.position);
 
-                    if(Distance <= 1.2f)
+                    if(Distance <= Agent.stoppingDistance)
                     { 
                         Action_State = 1;
                     }
@@ -126,9 +94,69 @@ public class Minion : MonoBehaviour
 
             case 3:
 
+                Agent.isStopped = true;
                 Controller.SetFloat("Action", 1f);
 
                 break;
+        }
+
+        CheckTargetHealth();
+    }
+
+    void Conditions()
+    {
+        for (int i = 0; i < DetectedEnemies.Count; i++)
+        {
+            if (DetectedEnemies[i] == false)
+            {
+                DetectedEnemies.RemoveAt(i);
+            }
+        }
+
+        if(Target == null)
+        {
+            Target = EnemyCrystal;
+        }
+
+        if(DetectedEnemies.Count != 0)
+        {
+            for(int i = 0; i < DetectedEnemies.Count; i++)
+            {
+                if (Vector3.Distance(this.gameObject.transform.position, DetectedEnemies[i].transform.position) < Vector3.Distance(this.gameObject.transform.position, Target.transform.position))
+                {
+                    Target = DetectedEnemies[i];
+                }
+            }
+        }
+
+        if (DetectedEnemies.Count != 0)
+        {
+            if (DetectedEnemies[0] == null)
+            {
+                DetectedEnemies.RemoveAt(0);
+            }
+        }
+
+        if (DetectedEnemies.Count == 0 || DetectedEnemies == null)
+        {
+            Action_State = 0;
+        }
+
+        if (Health <= 0)
+        {
+            Action_State = 3;
+        }
+
+        if(Target != null)
+        {
+            if (Target.tag == "PowerSource")
+            {
+                Agent.stoppingDistance = 2;
+            }
+            else
+            {
+                Agent.stoppingDistance = 3;
+            }
         }
     }
 
@@ -137,6 +165,66 @@ public class Minion : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    void CheckTargetHealth()
+    {
+        if(Target != null)
+        {
+            switch (Target.tag)
+            {
+                case "Minion":
+
+                    if (Target.GetComponent<Minion>().Health <= 0)
+                    {
+                        Target = null;
+                        Conditions();
+                    }
+
+                    break;
+
+                case "Turret":
+
+                    if (Target.GetComponent<Turret_Base>().Health <= 0)
+                    {
+                        Target = null;
+                        Conditions();
+                    }
+
+
+                    break;
+
+                case "Character":
+
+
+                    if (Target.GetComponent<BaseCharacter>().CurrentHealth <= 0)
+                    {
+                        Target = null;
+                        Conditions();
+                    }
+
+                    break;
+
+                case "Player":
+
+                    if (Target.GetComponent<PlayerInput>().CurrentHealth <= 0)
+                    {
+                        Target = null;
+                        Conditions();
+                    }
+
+                    break;
+
+                case "PowerSource":
+
+                    if (Target.GetComponent<PowerSource>().Health <= 0)
+                    {
+                        Target = null;
+                        Conditions();
+                    }
+
+                    break;
+            }
+        }     
+    }
     public void Melee_Hit()
     {
 
@@ -167,6 +255,12 @@ public class Minion : MonoBehaviour
             case "Turret":
 
                 DetectedEnemies[0].gameObject.GetComponent<Turret_Base>().Health -= Damage;
+
+                break;
+
+            case "PowerSource":
+
+                DetectedEnemies[0].gameObject.GetComponent<PowerSource>().Health -= Damage;
 
                 break;
         }

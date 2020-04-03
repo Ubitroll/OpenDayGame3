@@ -905,6 +905,9 @@ MonoBehaviour:
   AI_1_Choice: {fileID: 0}
   AI_2_Choice: {fileID: 0}
   AI_3_Choice: {fileID: 0}
+  CurrentPlayerScore: 0
+  CurrentPlayerName: Nerv_1
+  HasWon: 0
 --- !u!4 &677440493
 Transform:
   m_ObjectHideFlags: 0
@@ -1316,6 +1319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbc726e283f6ba4cb646d9d40384593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InformationForPanelMeeting: {fileID: 1444413584}
   MainButtons:
   - {fileID: 1591664019}
   - {fileID: 2022981322}
@@ -1335,10 +1339,8 @@ MonoBehaviour:
   - {fileID: 1905203499}
   - {fileID: 1316628086}
   CharactersNotSelected:
-  - {fileID: 4623673011276552426, guid: fd12ebfb726651f4a93ca524e79ef387, type: 3}
-  - {fileID: 4813729192802945357, guid: eb9d96ee9584eec4cac260debada8ca2, type: 3}
-  - {fileID: 8198764313708893909, guid: 1216ca0bba2148141885a9980c79931c, type: 3}
-  - {fileID: 3163418579229574973, guid: fdc4ca55b18cdaa4e969d90f4454ae1f, type: 3}
+  - {fileID: 188172864290514904, guid: fd12ebfb726651f4a93ca524e79ef387, type: 3}
+  - {fileID: 3011454823167203484, guid: 287ced2e8c32c874e8b639284ef0311a, type: 3}
   PickTimer: 0
   CountToStart: 0
   Timer: {fileID: 703218313}
@@ -1839,6 +1841,80 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1429756679}
+  m_CullTransparentMesh: 0
+--- !u!1 &1444413584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1444413585}
+  - component: {fileID: 1444413587}
+  - component: {fileID: 1444413586}
+  m_Layer: 5
+  m_Name: Info
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1444413585
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444413584}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1832170274}
+  m_Father: {fileID: 1895041606}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 287.49994, y: 26}
+  m_SizeDelta: {x: 675, y: 729.3}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1444413586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444413584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1444413587
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444413584}
   m_CullTransparentMesh: 0
 --- !u!1 &1462870106
 GameObject:
@@ -2447,6 +2523,86 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1827554417}
   m_CullTransparentMesh: 0
+--- !u!1 &1832170273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832170274}
+  - component: {fileID: 1832170276}
+  - component: {fileID: 1832170275}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1832170274
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832170273}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1444413585}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.000015259, y: 0.0024872}
+  m_SizeDelta: {x: 675, y: 729.3}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1832170275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832170273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 50
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 300
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'To start the very limited playable section of the game. Please press ''A''
+    on your controller so you select the first hero. You will use the left analog
+    stick to control movement with ''RT'' to do a basic attack. We are still in the
+    process of integrating the ability system due to unforseen issues. '
+--- !u!222 &1832170276
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832170273}
+  m_CullTransparentMesh: 0
 --- !u!1 &1895041605
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,6 +2633,7 @@ RectTransform:
   - {fileID: 483752412}
   - {fileID: 556454732}
   - {fileID: 441064966}
+  - {fileID: 1444413585}
   m_Father: {fileID: 984812220}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

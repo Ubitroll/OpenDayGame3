@@ -13,6 +13,7 @@ TagManager:
   - HoverIndicator
   - PowerSource
   - Shop
+  - HomeBase
   layers:
   - Default
   - TransparentFX

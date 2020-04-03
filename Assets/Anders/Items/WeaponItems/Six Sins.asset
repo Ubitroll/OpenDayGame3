@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Six Sins
   Description: +15 Weapon Damage
-  ID: 21
-  ItemIcon: {fileID: 21300000, guid: 26d6cea92eb128b4cbba29f289171ba3, type: 3}
+  ID: 211
+  ItemIcon: {fileID: 21300000, guid: ae07dd020fc5ca8499245ea7d990274e, type: 3}
   Damage: 15
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 650

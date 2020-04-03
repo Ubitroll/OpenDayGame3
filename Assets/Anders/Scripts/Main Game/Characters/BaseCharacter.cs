@@ -27,8 +27,8 @@ public class BaseCharacter : MonoBehaviour
     private float CurrentSpeed;
     public float BaseSpeed;
 
-    private float CurrentWeaponPower;
-    public float BaseWeaponPower;
+    private int CurrentWeaponPower;
+    public int BaseWeaponPower;
 
     private float CurrentAttackSpeed;
     public float BaseAttackSpeed;
@@ -89,6 +89,8 @@ public class BaseCharacter : MonoBehaviour
 
     public GameObject HomePowerSource;
 
+    public Sprite CharacterIcon;
+
     #endregion
 
     #region Animation Vars
@@ -136,6 +138,7 @@ public class BaseCharacter : MonoBehaviour
             AIStateValue = 2;
             return;
         }
+
         #region Checking Missing List Objects
 
         for (int i = 0; i < DetectedEnemies.Count; i++)
@@ -165,13 +168,16 @@ public class BaseCharacter : MonoBehaviour
         {
             if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) > 10)
             {
-                if (Target.tag != "PowerSource")
+                if (Target.tag != "PowerSource" || Target.tag != "HomeBase" || Target.tag != "Turret")
                 {
                     Target = null;
                     Agent.isStopped = true;
                 }
             }
-            CheckTargetHealth();
+            else
+            {
+                CheckTargetHealth();
+            }
             show = Vector3.Distance(this.gameObject.transform.position, Target.transform.position);
         }
         
@@ -285,22 +291,9 @@ public class BaseCharacter : MonoBehaviour
 
             case 2: //Retreat / TP Home
 
-             #region 2
+                #region 2
 
-                if (DetectedEnemies.Count == 0 && DetectedEntities.Count == 0)
-                {
-                    Controller.SetFloat("Action", 0);
-                    if(TPTimer > 0)
-                    {
-                        TPTimer -= Time.fixedDeltaTime;
-                        if(TPTimer <= 0)
-                        {
-                            this.gameObject.transform.position = HomeBase.transform.position;
-                        }
-                    }
-                }
-
-                if(DetectedEnemies.Count != 0)
+                if (DetectedEnemies.Count != 0)
                 {
                     Debug.Log("Setting Target To base");
                     Target = HomePowerSource;
@@ -309,6 +302,22 @@ public class BaseCharacter : MonoBehaviour
                     return;
                 }
 
+                if (DetectedEnemies.Count == 0 && DetectedEntities.Count == 0)
+                {
+                    Agent.isStopped = true;
+                    Target = HomeBase;
+                    Controller.SetFloat("Action", 0);
+                    if(TPTimer > 0)
+                    {
+                        TPTimer -= Time.fixedDeltaTime;
+                        if(TPTimer <= 0)
+                        {
+                            this.gameObject.transform.position = HomeBase.transform.position;
+                            Agent.isStopped = false;
+                        }
+                    }
+                }
+               
                 if (Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
                 {
                     CurrentHealth += (int)(CurrentMaxHealth * 0.2); //Regenning when at base
@@ -319,7 +328,8 @@ public class BaseCharacter : MonoBehaviour
 
                     if (CurrentHealth == CurrentMaxHealth)
                     {
-                        AIStateValue = 4;
+                        Agent.isStopped = false;
+                        AIStateValue = 3;
                         TPTimer = 3;
                         return;
                     }
@@ -355,7 +365,7 @@ public class BaseCharacter : MonoBehaviour
                 {
                     Target = DetectedObjectives[0];
                     Controller.SetFloat("Action", 0.1f);
-                    Agent.SetDestination(Target.transform.position);
+                    Agent.destination = (Target.transform.position);
                     if(Vector3.Distance(this.gameObject.transform.position, Target.transform.position) <= StoppingDistance)
                     {
                         AIStateValue = 4;
@@ -504,6 +514,7 @@ public class BaseCharacter : MonoBehaviour
     {
         if(Target != null)
         {
+            transform.LookAt(Target.transform);
             switch (Target.tag)
             {
                 case "Character":
@@ -561,7 +572,21 @@ public class BaseCharacter : MonoBehaviour
                 {
                     DetectedEntities.Remove(Target);
                     Target = null;
+                }         
+
+                break;
+
+            case "Turret":
+
+                if (Target.GetComponent<Turret_Base>().Health <= 0)
+                {
+                    DetectedEntities.Remove(Target);
+                    Target = null;
                 }
+
+                break;
+
+            case "PowerSource":
 
                 break;
         }

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Frostburn
   Description: +90 Magic Damage
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 322
+  ItemIcon: {fileID: 21300000, guid: e43130a3520ea3046b41d31b826d7234, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 2700

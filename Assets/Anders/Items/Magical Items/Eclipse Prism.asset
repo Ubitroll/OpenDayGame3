@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Eclipse Prism
   Description: +30 Magic Damage
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 212
+  ItemIcon: {fileID: 21300000, guid: a276ddff78cab9b4e9acb8512c7d48fe, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 650

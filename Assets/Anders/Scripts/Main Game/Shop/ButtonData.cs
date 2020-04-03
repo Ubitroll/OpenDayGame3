@@ -16,20 +16,15 @@ public class ButtonData : MonoBehaviour
     {
         if (Player.GetComponent<Player>().Gold >= ThisItem.Cost)
         {
-            for (int i = 0; i < Player.GetComponent<PlayerInventory>().Inventory.Count; i++)
+            if(PlayerInventory.Instance.Inventory.Count < PlayerInventory.Instance.MaxInventoryCap)
             {
-                Debug.Log(i);
-                if (Player.GetComponent<PlayerInventory>().Inventory[i] == null)
-                {
-                    Player.GetComponent<PlayerInventory>().Inventory[i] = ThisItem;
-                    Player.GetComponent<Player>().Gold -= ThisItem.Cost;
-                    Player.GetComponent<PlayerInventory>().SortInventory();
-                    break;
-                }
-                if (i == Player.GetComponent<PlayerInventory>().Inventory.Count - 1)
-                {
-                    Debug.Log("Not enough room in the inventory");
-                }
+                Player.GetComponent<Player>().Gold -= ThisItem.Cost;
+                PlayerInventory.Instance.Inventory.Add(ThisItem);
+                PlayerInventory.Instance.SortInventory();
+            }
+            else
+            {
+                Debug.Log("Not enough room in inventory");
             }
         }
         else

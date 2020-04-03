@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Clockwork
   Description: +30 Magic Damage, +5 Mana Regen
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 342
+  ItemIcon: {fileID: 21300000, guid: a6f3833a427787e48baab071c73f9f67, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 5
+  ExtraMana: 400
   HealthRegen: 0
+  AbilityCooldown: 35
   Cost: 2500

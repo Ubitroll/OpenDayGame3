@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Bonesaw
   Description: +50% Attack Speed, +30% Weapon Power and 30% Armour Piercing
-  ID: 35
+  ID: 351
   ItemIcon: {fileID: 21300000, guid: 48c5fc7b01eebed448d4bbd8f849c886, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 2700

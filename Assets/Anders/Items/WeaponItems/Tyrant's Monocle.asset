@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Tyrant's Monocle
   Description: +50 Weapon Power, +30% Critical Damage and +30% Critical Chance
-  ID: 36
-  ItemIcon: {fileID: 0}
+  ID: 361
+  ItemIcon: {fileID: 21300000, guid: 38ba8d4f772442548a8838b03f5de3c9, type: 3}
   Damage: 50
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 30
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 2750
