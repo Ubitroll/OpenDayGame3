@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Barbed Needle
   Description: +10% Lifesteal and +12 Weapon Power
-  ID: 22
-  ItemIcon: {fileID: 0}
+  ID: 221
+  ItemIcon: {fileID: 21300000, guid: e51e768335b33f34784da2053e9d19ac, type: 3}
   Damage: 12
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 10
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 800

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Void Battery
   Description: +250 Mana, +3 Mana Regen
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 222
+  ItemIcon: {fileID: 21300000, guid: dd8923465a8c20f4dae545d6525eb521, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 3
+  ExtraMana: 250
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 700

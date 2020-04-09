@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    public GameObject InformationForPanelMeeting;
+
     public GameObject[] MainButtons = new GameObject[3];
     public GameObject[] HeroSelectionUI = new GameObject[3];
     public GameObject[] SelectedHeroUI = new GameObject[3];
@@ -115,6 +117,9 @@ public class MainMenuManager : MonoBehaviour
 
         if (LoadHeroSelection)
         {
+
+            InformationForPanelMeeting.SetActive(true);
+
             #region UI Handler
             if (HeroSelectionUI[0].transform.localPosition.x < -720)
             {
@@ -183,20 +188,20 @@ public class MainMenuManager : MonoBehaviour
                         CharactersNotSelected.RemoveAt(RandomChoice);
                         i = 0;
                     }
-                    if (DataTransferer.Instance.AI_2_Choice == null)
-                    {
-                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                        DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
-                        CharactersNotSelected.RemoveAt(RandomChoice);
-                        i = 0;
-                    }
-                    if (DataTransferer.Instance.AI_3_Choice == null)
-                    {
-                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                        DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
-                        CharactersNotSelected.RemoveAt(RandomChoice);
-                        i = 0;
-                    }
+                    //if (DataTransferer.Instance.AI_2_Choice == null)
+                    //{
+                    //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                    //    DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
+                    //    CharactersNotSelected.RemoveAt(RandomChoice);
+                    //    i = 0;
+                    //}
+                    //if (DataTransferer.Instance.AI_3_Choice == null)
+                    //{
+                    //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+                    //    DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
+                    //    CharactersNotSelected.RemoveAt(RandomChoice);
+                    //    i = 0;
+                    //}
                 }
 
                 InitializeGame();    
@@ -333,11 +338,28 @@ public class MainMenuManager : MonoBehaviour
         CountToStart = true;
         PickTimer = 3;
 
-        for (int i = 0; i < SelectedHeroUI.Length; i++)
-        {
-            SelectedHeroUI[i].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            SelectedHeroUI[i].GetComponent<Image>().sprite = HeroButtons[i].GetComponent<Image>().sprite;
-        }
+        SelectedHeroUI[0].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+        SelectedHeroUI[0].GetComponent<Image>().sprite = DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().CharacterIcon;
+        //SelectedHeroUI[1].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+        //SelectedHeroUI[1].GetComponent<Image>().sprite = DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().CharacterIcon;
+        SelectedHeroUI[2].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+        SelectedHeroUI[2].GetComponent<Image>().sprite = DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().CharacterIcon;
+        //SelectedHeroUI[3].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+        //SelectedHeroUI[3].GetComponent<Image>().sprite = DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().CharacterIcon;
+
+        SetPlayer();
+    }
+
+    void SetPlayer()
+    {
+        DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().enabled = false;
+        DataTransferer.Instance.PlayerChoice.GetComponent<PlayerInput>().enabled = true;
+        DataTransferer.Instance.PlayerChoice.tag = "Player";
+
+
+        DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().enabled = true; //Ensures if anything is saved when player uses it then it will revert back to default.
+        DataTransferer.Instance.AI_1_Choice.GetComponent<PlayerInput>().enabled = false;
+        DataTransferer.Instance.AI_1_Choice.tag = "Character";
     }
 
     void RandomPick()
@@ -358,20 +380,20 @@ public class MainMenuManager : MonoBehaviour
                 CharactersNotSelected.RemoveAt(RandomChoice);
                 i = 0;
             }
-            if (DataTransferer.Instance.AI_2_Choice == null)
-            {
-                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
-                CharactersNotSelected.RemoveAt(RandomChoice);
-                i = 0;
-            }
-            if (DataTransferer.Instance.AI_3_Choice == null)
-            {
-                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
-                CharactersNotSelected.RemoveAt(RandomChoice);
-                i = 0;
-            }
+            //if (DataTransferer.Instance.AI_2_Choice == null) //Scalability here!
+            //{
+            //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+            //    DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
+            //    CharactersNotSelected.RemoveAt(RandomChoice);
+            //    i = 0;
+            //}
+            //if (DataTransferer.Instance.AI_3_Choice == null)
+            //{
+            //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
+            //    DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
+            //    CharactersNotSelected.RemoveAt(RandomChoice);
+            //    i = 0;
+            //}
         }
     }
     public void Clicked(string Option)

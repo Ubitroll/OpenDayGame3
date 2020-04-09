@@ -54,6 +54,15 @@ public class Turret_Base : MonoBehaviour
 
     #endregion
 
+    #region Turret Part References
+
+    public MeshRenderer TurretBody;
+    public MeshRenderer TurretTop;
+    public GameObject Owl;
+
+
+    #endregion
+
     void Start()
     {
         Health = 1000;
@@ -108,36 +117,39 @@ public class Turret_Base : MonoBehaviour
 
         if (DetectedEnemies.Count != 0)
         {
-            if (Fire_Timer == 6f)
+            if (!HasExploded)
             {
-                Instantiate(UsingParticles[0], TurretFirePoint.transform);
-                Fire_Timer -= Time.fixedDeltaTime;
-            }
-            else
-            {
-                Fire_Timer -= Time.fixedDeltaTime;
-
-                if (Fire_Timer <= 1)
+                if (Fire_Timer == 6f)
                 {
-                    if (!HasFired)
+                    Instantiate(UsingParticles[0], TurretFirePoint.transform);
+                    Fire_Timer -= Time.fixedDeltaTime;
+                }
+                else
+                {
+                    Fire_Timer -= Time.fixedDeltaTime;
+
+                    if (Fire_Timer <= 1)
                     {
-                        Destroy(TurretFirePoint.transform.GetChild(0).gameObject);
-                        HasFired = true;
-                        Instantiate(UsingParticles[1], TurretFirePoint.transform);
+                        if (!HasFired)
+                        {
+                            Destroy(TurretFirePoint.transform.GetChild(0).gameObject);
+                            HasFired = true;
+                            Instantiate(UsingParticles[1], TurretFirePoint.transform);
 
-                        beamStart = Instantiate(beamStartPrefab, TurretFirePoint.transform);
-                        beamEnd = Instantiate(beamEndPrefab, DetectedEnemies[0].transform);
-                        beam = Instantiate(beamLineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-                        line = beam.GetComponent<LineRenderer>();
+                            beamStart = Instantiate(beamStartPrefab, TurretFirePoint.transform);
+                            beamEnd = Instantiate(beamEndPrefab, DetectedEnemies[0].transform);
+                            beam = Instantiate(beamLineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                            line = beam.GetComponent<LineRenderer>();
+                        }
                     }
-                }
 
-                if(Fire_Timer <= 0f)
-                {
-                    HasFired = false;
-                    ResetTurret();
-                }
+                    if (Fire_Timer <= 0f)
+                    {
+                        HasFired = false;
+                        ResetTurret();
+                    }
 
+                }
             }
         }
 
@@ -160,9 +172,22 @@ public class Turret_Base : MonoBehaviour
 
                 GameObject Instance = Instantiate(Explosions[0], new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z), Quaternion.identity) as GameObject;
 
-                foreach(GameObject Entity in DetectedEnemies)
+                for(int i = 0; i < DetectedEnemies.Count; i++)
                 {
-                    Entity.GetComponent<Player>().Health -= 100 / 4; //This 25 damage can be modified when balancing.
+                    switch (DetectedEnemies[i].tag)
+                    {
+                        case "Minion":
+
+                            DetectedEnemies[i].GetComponent<Minion>().Health -= 100 / 4; //This 25 damage can be modified when balancing.
+
+                            break;
+
+                        case "Character":
+
+                            DetectedEnemies[i].GetComponent<BaseCharacter>().CurrentHealth -= 100 / 4;
+
+                            break;
+                    }
                 }
             }
         }
@@ -172,7 +197,11 @@ public class Turret_Base : MonoBehaviour
             Explosion_Timer -= Time.fixedDeltaTime;
             if(Explosion_Timer <= 0)
             {
-                this.transform.gameObject.SetActive(false);
+                Destroy(TurretBody);
+                Destroy(TurretTop);
+                Destroy(Owl);               
+                this.gameObject.GetComponent<CapsuleCollider>().enabled = false;
+                Destroy(this.gameObject);
             }
         }
     }

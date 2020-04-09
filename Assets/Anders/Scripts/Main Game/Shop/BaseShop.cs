@@ -24,6 +24,26 @@ public class BaseShop : MonoBehaviour
     public bool PressedUD,PressedLR;
 
     public GameObject HoverIndicator;
+    public GameObject CurrentIndicator;
+    public bool HasHover;
+
+    #region Side Panel Vars
+
+    public GameObject SidePanel;
+    public Text ItemName, ItemDescription, ItemCost;
+    public Image ItemIcon;
+
+    #endregion
+
+    #region Inventory in Shop Vars
+
+    public int CurrentItemSlot;
+    public List<Image> Inventory = new List<Image>();
+    public List<Image> BackgroundSlot = new List<Image>();
+
+    #endregion
+
+    #region Singleton
 
     private static BaseShop _instance;
 
@@ -40,6 +60,8 @@ public class BaseShop : MonoBehaviour
             _instance = this;
         }
     }
+
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +69,7 @@ public class BaseShop : MonoBehaviour
 
         OnTier = 1;
         SelectionState = -1;
+        HasHover = false;
         Buttons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
         Buttons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
         Buttons[2].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
@@ -67,6 +90,14 @@ public class BaseShop : MonoBehaviour
             }
 
             SelectionState = -1;
+
+
+            Destroy(GameObject.FindGameObjectWithTag("HoverIndicator"));
+            HasHover = false;
+
+            SidePanel.SetActive(false);
+            ResetItemPanel();
+
             RecommendShop.SetActive(false);
             WeaponShop.SetActive(false);
             CrystalShop.SetActive(false);
@@ -74,8 +105,45 @@ public class BaseShop : MonoBehaviour
             MiscShop.SetActive(false);
         }
 
-        if(SelectionState == -1)
+        if (SelectionState > -1)
         {
+            if(CurrentClassIndex != 0)
+            {
+                if (Input.GetKeyDown("joystick button 0"))
+                {
+                    foreach (GameObject Item in ShopItems)
+                    {
+                        if (Item.GetComponent<ButtonData>().ThisItem.ID == IDBuilder)
+                        {
+                            Item.GetComponent<ButtonData>().Selected();
+                        }
+                    }
+                }
+
+                LRDpad();
+                UDDpad();
+            }
+            else
+            {
+                if (Input.GetKeyDown("joystick button 0"))
+                {
+                    Player.GetComponent<Player>().Gold += PlayerInventory.Instance.Inventory[CurrentItemSlot].Cost / 2;
+                    PlayerInventory.Instance.Inventory.RemoveAt(CurrentItemSlot);
+                    LoadInventory();
+                }
+
+                Inventory_LRDpad();
+            }
+        }
+
+        if (SelectionState == -1)
+        {
+            GameObject[] Find = GameObject.FindGameObjectsWithTag("HoverIndicator");
+            foreach (GameObject Object in Find)
+            {
+                Destroy(Object);
+            }
+
             if (Input.GetAxis("C1DpadUD") > 0 && !PressedUD)
             {
                 PressedUD = true;
@@ -100,30 +168,13 @@ public class BaseShop : MonoBehaviour
             }
             if (Input.GetKeyDown("joystick button 0"))
             {
-                SelectionState = CurrentClassIndex;
+                SelectionState = 1;
                 CurrentItemIndex = 0;
-                ClassSelected(SelectionState);
+                ClassSelected(CurrentClassIndex);
             }
 
             UpdateShopClassUI();
-        }
-        
-        if(SelectionState > -1)
-        {
-            if(Input.GetKeyDown("joystick button 0"))
-            {
-                foreach(GameObject Item in ShopItems)
-                {
-                    if(Item.GetComponent<ButtonData>().ThisItem.ID == IDBuilder)
-                    {
-                        Item.GetComponent<ButtonData>().Selected();
-                    }
-                }
-            }
-            LRDpad();
-            UDDpad();
-            UpdateShopItemUI();
-        }
+        }             
     }
 
     public void ClassSelected(int Option)
@@ -138,19 +189,24 @@ public class BaseShop : MonoBehaviour
         {
             case 0:
 
-
+                RecommendShop.SetActive(true);
+                SidePanel.SetActive(true);
+                LoadInventory();
+                HoverOverItem();
 
                 break;
 
             case 1:
 
                 WeaponShop.SetActive(true);
+                SidePanel.SetActive(true);
 
                 break;
 
             case 2:
 
-
+                CrystalShop.SetActive(true);
+                SidePanel.SetActive(true);
 
                 break;
 
@@ -166,6 +222,8 @@ public class BaseShop : MonoBehaviour
 
                 break;
         }
+
+        LoadValues();
     }
 
     void ExitShop()
@@ -177,6 +235,9 @@ public class BaseShop : MonoBehaviour
         MiscShop.SetActive(false);
 
         this.gameObject.SetActive(false);
+
+        GameObject Player = GameObject.FindGameObjectWithTag("Player");
+        Player.GetComponent<PlayerInput>().enabled = true;
     }
 
     void UpdateShopClassUI()
@@ -228,27 +289,35 @@ public class BaseShop : MonoBehaviour
 
     void UpdateShopItemUI()
     {
+        Debug.Log("Firing");
         IDBuilder = null;
 
-        IDBuilder = OnTier.ToString() + CurrentItemIndex.ToString();
+        IDBuilder = OnTier.ToString() + CurrentItemIndex.ToString() + CurrentClassIndex.ToString();
 
         foreach(GameObject Item in ShopItems)
         {
-            Debug.Log(Item.GetComponent<ButtonData>().ThisItem.ID);
             if (Item.GetComponent<ButtonData>().ThisItem.ID == IDBuilder)
             {
-                Debug.Log("Match");
-                if (GameObject.FindGameObjectWithTag("HoverIndicator"))
+                if(HasHover == false)
                 {
-                    Destroy(GameObject.FindGameObjectWithTag("HoverIndicator").gameObject);
+                    HasHover = true;
+                    GameObject Instance = Instantiate(HoverIndicator, Item.transform) as GameObject;
+                    CurrentIndicator = Instance;
+                    SetItemPanel(Item.GetComponent<ButtonData>().ThisItem);
                 }
-                Instantiate(HoverIndicator, Item.transform);
+                else
+                {
+                    CurrentIndicator.transform.position = Item.transform.position;
+                    SetItemPanel(Item.GetComponent<ButtonData>().ThisItem);
+                }
             }
         }
     }
 
     void LoadValues()
     {
+        Debug.Log("Loading Values");
+
         switch (OnTier)
         {
             case 1:
@@ -279,8 +348,11 @@ public class BaseShop : MonoBehaviour
 
                 break;
         }
+
+        UpdateShopItemUI();
     }
 
+    #region Normal D-pad Input Voids
     void UDDpad()
     {
         if (Input.GetAxis("C1DpadUD") > 0 && !PressedUD)
@@ -301,6 +373,12 @@ public class BaseShop : MonoBehaviour
                 CurrentItemIndex = 0;
             }
         }
+
+        if (PressedUD == true)
+        {
+            LoadValues();
+        }
+
         if (Input.GetAxis("C1DpadUD") == 0)
         {
             PressedUD = false;
@@ -327,10 +405,140 @@ public class BaseShop : MonoBehaviour
                 OnTier = 3;
             }
         }
-        if (Input.GetAxis("C1DpadLR") == 0)
+
+        if(PressedLR == true)
         {
             LoadValues();
+        }
+
+        if (Input.GetAxis("C1DpadLR") == 0)
+        {
             PressedLR = false;
         }
     }
+
+    #endregion
+
+    #region Inventory Selling Methods
+
+    void LoadInventory()
+    {
+        for(int i = 0; i < Inventory.Count; i++)
+        {
+            Inventory[i].sprite = null;
+            Inventory[i].color = new Color(1, 1, 1, 0);
+        }
+
+        for (int i = 0; i < PlayerInventory.Instance.Inventory.Count; i++)
+        {
+            Inventory[i].sprite = PlayerInventory.Instance.Inventory[i].ItemIcon;
+            Inventory[i].color = new Color(1, 1, 1, 1);
+        }
+        for (int i = Inventory.Count; i < Inventory.Count; i++)
+        {
+            Inventory[i].color = new Color(1, 1, 1, 0);
+        }
+
+        PlayerInventory.Instance.SortInventory();
+
+        if (PlayerInventory.Instance.Inventory.Count != 0)
+        {
+            if (PlayerInventory.Instance.Inventory.Count >= CurrentItemSlot)
+            {
+                SidePanel.SetActive(true);
+                SetItemPanel(PlayerInventory.Instance.Inventory[CurrentItemSlot]);
+            }
+            else
+            {
+                SidePanel.SetActive(false);
+            }
+        }
+        else
+        {
+            SidePanel.SetActive(false);
+        }
+    }
+    void Inventory_LRDpad()
+    {
+        if (Input.GetAxis("C1DpadLR") > 0 && !PressedLR)
+        {
+            PressedLR = true;
+            CurrentItemSlot++;
+            if(CurrentItemSlot > 5)
+            {
+                CurrentItemSlot = 0;
+            }
+
+        }
+        if (Input.GetAxis("C1DpadLR") < 0 && !PressedLR)
+        {
+            PressedLR = true;
+            CurrentItemSlot--;
+            if (CurrentItemSlot < 0)
+            {
+                CurrentItemSlot = 5;
+            }
+        }
+
+        if (PressedLR == true)
+        {
+            HoverOverItem();            
+        }
+
+        if(Input.GetAxis("C1DpadLR") == 0)
+        {
+            PressedLR = false;
+        }
+    }
+    void HoverOverItem()
+    {     
+        for (int i = 0; i < BackgroundSlot.Count; i++)
+        {
+            BackgroundSlot[i].color = new Color(1, 1, 1, 0.3f);
+        }
+
+        BackgroundSlot[CurrentItemSlot].color = new Color(1, 1, 1, 1);
+
+        if(PlayerInventory.Instance.Inventory.Count != 0)
+        {
+            if(PlayerInventory.Instance.Inventory.Count >= CurrentItemSlot)
+            {
+                SetItemPanel(PlayerInventory.Instance.Inventory[CurrentItemSlot]);
+            }
+        }
+    }
+
+    #endregion
+
+    #region SidePanel
+    void ResetItemPanel()
+    {
+        ItemName.text = "";
+        ItemDescription.text = "";
+        ItemCost.text = "";
+        ItemIcon.sprite = null;
+        ItemIcon.color = new Color(1, 1, 1, 0);
+    }
+
+    void SetItemPanel(BaseItem Item)
+    {
+        if(CurrentClassIndex != 0)
+        {
+            ItemName.text = Item.Name;
+            ItemDescription.text = Item.Description;
+            ItemCost.text = "Cost : " + Item.Cost;
+            ItemIcon.sprite = Item.ItemIcon;
+            ItemIcon.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            ItemName.text = Item.Name;
+            ItemDescription.text = Item.Description;
+            ItemCost.text = "Price : " + (Item.Cost / 2);
+            ItemIcon.sprite = Item.ItemIcon;
+            ItemIcon.color = new Color(1, 1, 1, 1);
+        }
+    }
+
+    #endregion
 }

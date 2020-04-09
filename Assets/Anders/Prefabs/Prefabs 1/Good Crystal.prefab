@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 6784742787991759297}
   - component: {fileID: 4200882220974545995}
   - component: {fileID: -2028386333890490689}
+  - component: {fileID: 7497366254970706947}
   m_Layer: 0
   m_Name: Good Crystal
   m_TagString: PowerSource
@@ -164,3 +165,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+--- !u!114 &7497366254970706947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3296530954429217945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2941f4289c4acb5419e2a8e1d0000411, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 300
+  HasExploded: 0
+  Explosion: {fileID: 1016683534986130, guid: 19049f66439229f46b40c22549c6e40f, type: 3}
+  Timer: 0

@@ -6,7 +6,7 @@ public class Turret_Detection : MonoBehaviour
 {
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion")
+        if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion" || collision.gameObject.tag == "Player")
         {
             if (collision.gameObject.GetComponent<Team_Assign>().Team != this.gameObject.GetComponentInParent<Team_Assign>().Team)
             {
@@ -16,7 +16,7 @@ public class Turret_Detection : MonoBehaviour
     }
     private void OnTriggerExit(Collider collision)
     {
-        if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion")
+        if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion" || collision.gameObject.tag == "Player")
         {
             if (collision.gameObject.GetComponent<Team_Assign>().Team != this.gameObject.GetComponentInParent<Team_Assign>().Team)
             {

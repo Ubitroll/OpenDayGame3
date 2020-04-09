@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Anders/Scenes/MainGame.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Anders/Scenes/Leaderboard.unity
+    guid: 891dff801fba9934ca2d5c914d676084
   m_configObjects: {}

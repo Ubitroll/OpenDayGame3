@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Broken Myth
   Description: +50 Magic Damage, +45% Armour/Shield Pierce
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 312
+  ItemIcon: {fileID: 21300000, guid: 25c39869133f2374b867a0d2be97483f, type: 3}
   Damage: 0
   ArmourPierce: 45
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 2900

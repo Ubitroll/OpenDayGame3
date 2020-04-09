@@ -8,14 +8,14 @@ public class Stalls : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Character")
+        if (collision.gameObject.tag == "Player")
         {
             OpenShopDisplay.SetActive(true);
         }
     }
     private void OnTriggerExit(Collider collision)
     {
-        if (collision.gameObject.tag == "Character")
+        if (collision.gameObject.tag == "Player")
         {
             OpenShopDisplay.SetActive(false);
         }
@@ -27,6 +27,8 @@ public class Stalls : MonoBehaviour
         {
             if (OpenShopDisplay.activeSelf)
             {
+                GameObject Player = GameObject.FindGameObjectWithTag("Player");
+                Player.GetComponent<PlayerInput>().enabled = false;
                 BaseShopUI.SetActive(true);
             }
         }

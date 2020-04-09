@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Piercing Spear
   Description: +15 Weapon Power and +10% Armour Pierce
-  ID: 23
-  ItemIcon: {fileID: 0}
+  ID: 231
+  ItemIcon: {fileID: 21300000, guid: 2843ecc7fccad4d439b4cebf40cb7b00, type: 3}
   Damage: 15
   ArmourPierce: 10
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 0
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 0
   Cost: 900

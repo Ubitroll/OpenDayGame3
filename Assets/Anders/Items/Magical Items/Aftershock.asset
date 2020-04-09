@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Aftershock
   Description: +30 Magic Damage, +1 Mana Regen
-  ID: 
-  ItemIcon: {fileID: 0}
+  ID: 352
+  ItemIcon: {fileID: 21300000, guid: ae99563160f45fd4e826b2ca59f07b8c, type: 3}
   Damage: 0
   ArmourPierce: 0
+  ShieldPierce: 0
   AttackSpeed: 0
   LifeSteal: 0
   CriticalDamage: 0
@@ -28,5 +29,7 @@ MonoBehaviour:
   MovementSpeed: 0
   Health: 0
   ManaRegen: 1
+  ExtraMana: 0
   HealthRegen: 0
+  AbilityCooldown: 15
   Cost: 2600
