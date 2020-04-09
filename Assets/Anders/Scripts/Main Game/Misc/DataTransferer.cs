@@ -28,7 +28,6 @@ public class DataTransferer : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject); 
+        DontDestroyOnLoad(this.gameObject);
     }
-
 }
