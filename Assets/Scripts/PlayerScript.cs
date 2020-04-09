@@ -38,8 +38,6 @@ public class PlayerScript : MonoBehaviour
     // Ui settings
     public Slider healthBar;
     public Slider resourceBar;
-    public Text team1Score;
-    public Text team2Score;
     public Image characterImage;
     public Text ability1Timer;
     public Text ability2Timer;
@@ -53,9 +51,14 @@ public class PlayerScript : MonoBehaviour
     public bool isMelee = false;
     public bool isMage = false;
 
-    // Explosive Variables
+    // Ranged Variables
     public GameObject bomb;
-    bool bombSpawned = true;
+    public GameObject bombBarrel;
+    private bool bombSpawned = true;
+    public int ultimateExplosivesNumber;
+
+    // Summoner Variables
+    public int SouldCount;
 
     // Start is called before the first frame update
     void Start()
@@ -160,9 +163,7 @@ public class PlayerScript : MonoBehaviour
                     // Set channel time
                     channelTime = ability1ChannelTime;
 
-                    // Set to not do knockback
-                    bomb.GetComponent<BombScript>().doesKnockack = false;
-
+                    // Ensures only 1 bomb is spawned
                     bombSpawned = true;
 
                     // Do range ability 1
@@ -218,8 +219,8 @@ public class PlayerScript : MonoBehaviour
                     // Set channel time
                     channelTime = ability2ChannelTime;
 
-                    // Set to not do knockback
-                    bomb.GetComponent<BombScript>().doesKnockack = true;
+                    // Ensures only 1 bomb is spawned
+                    bombSpawned = true;
 
                     // Do range ability 1
                     StartCoroutine(RangeAbilityTwo());
@@ -239,7 +240,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
         // Else activate cool down timer
-        else
+        else if (ability2Ready == false)
         {
             if (timer2 > 0)
             {
@@ -271,8 +272,11 @@ public class PlayerScript : MonoBehaviour
 
                 if (isRange == true)
                 {
-                    // Do range ability 3
+                    // Set channel time
+                    channelTime = ability2ChannelTime;
 
+                    // Start ability coroutine
+                    StartCoroutine(RangeAbilityThree());
                 }
 
                 if (isMelee == true)
@@ -289,7 +293,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
         // Else activate cool down timer
-        else
+        else if(ability3Ready == false)
         {
             if (timer3 > 0)
             {
@@ -310,17 +314,73 @@ public class PlayerScript : MonoBehaviour
     // UI initialise method
     void InitialiseUI()
     {
-        healthBar.maxValue = playerMaxHealth;
-        resourceBar.maxValue = resourceMax;
-        ability1Timer.text = ability1Cooldown.ToString();
-        ability2Timer.text = ability2Cooldown.ToString();
-        ability3Timer.text = ability3Cooldown.ToString();
+        // If healthbar isn't null
+        if (healthBar != null)
+        {
+            healthBar.maxValue = playerMaxHealth;
+            healthBar.value = playerMaxHealth;
+        }
+        // If resourcebar isn't null
+        if (resourceBar != null)
+        {
+            resourceBar.maxValue = resourceMax;
+            resourceBar.value = resourceMax;
+        }
+        // If ability 1 timer isn't null
+        if (ability1Timer != null)
+        {
+            ability1Timer.text = ability1Cooldown.ToString();
+        }
+        // If ability 2 timer isn't null
+        if (ability2Timer != null)
+        {
+            ability2Timer.text = ability2Cooldown.ToString();
+        }
+        // If ability 3 timer isn't null
+        if (ability3Timer != null)
+        {
+            ability3Timer.text = ability3Cooldown.ToString();
+        }
+        // If Playerimage isnt null
+        if (characterImage != null)
+        {
+            if (isRange == true)
+            {
+                
+            }
+
+            if (isMage == true)
+            {
+
+            }
+
+            if (isMelee == true)
+            {
+
+            }
+
+            if (isSummoner == true)
+            {
+
+            }
+        }
     }
 
     // UI update method
     void UpdateUI()
     {
+        // Update ability timers
         ability1Timer.text = timer1.ToString();
+        ability2Timer.text = timer2.ToString();
+        ability3Timer.text = timer3.ToString();
+
+        // Update Health - Max is updated in case of item
+        healthBar.maxValue = playerMaxHealth;
+        healthBar.value = playerHealth;
+
+        // Update resources - Max is updated in case of item
+        resourceBar.maxValue = resourceMax;
+        resourceBar.value = resourceCurrent;
     }
 
     // Method to set up timers
@@ -344,8 +404,6 @@ public class PlayerScript : MonoBehaviour
 
     IEnumerator RangeAbilityOne()
     {
-        
-
         if (bombSpawned == true)
         {
             // Wait till channeled then spawn bomb
@@ -358,15 +416,30 @@ public class PlayerScript : MonoBehaviour
 
     IEnumerator RangeAbilityTwo()
     {
-        // Wait till channeled then spawn bomb
-        yield return new WaitForSeconds(channelTime);
-        Instantiate(bomb, this.transform.position, Quaternion.identity);
+        if (bombSpawned == true)
+        {
+            // Wait till channeled then spawn bomb
+            yield return new WaitForSeconds(channelTime);
+            Instantiate(bombBarrel, this.transform.position, Quaternion.identity);
+            bombSpawned = false;
+        }
+
     }
 
     IEnumerator RangeAbilityThree()
     {
+        
         // Wait till channeled then spawn bomb
         yield return new WaitForSeconds(channelTime);
-        Instantiate(bomb, this.transform.position, Quaternion.identity);
+
+        int i = ultimateExplosivesNumber;
+        // Spawn a number of explosives
+        while (i > 0)
+        {
+            // while (int i = explosivesNumber; 
+            Instantiate(bomb, this.transform.position, Quaternion.identity);
+            i--;
+        }
+        
     }
 }

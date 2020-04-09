@@ -7,7 +7,7 @@ public class BombScript : MonoBehaviour
     public bool doesKnockack = false;
     public int explosiveDamage;
     public float explosivePower = 5.0f;
-    public float explosiveRadius = 5.0f;
+    public float explosiveRadius = 20.0f;
     public float explosiveUpforce = 1.0f;
     public float fuse = 10.0f;
 
@@ -56,7 +56,7 @@ public class BombScript : MonoBehaviour
         }
 
         // Destroy bomb
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     IEnumerator BlowUp()

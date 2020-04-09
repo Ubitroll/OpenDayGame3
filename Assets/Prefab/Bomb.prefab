@@ -106,7 +106,6 @@ GameObject:
   - component: {fileID: 4398247516364249710}
   - component: {fileID: 4398247516364249709}
   - component: {fileID: 4398247516364249708}
-  - component: {fileID: 2593214770391877419}
   - component: {fileID: 4875301230870988602}
   m_Layer: 0
   m_Name: Bomb
@@ -202,26 +201,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abfaf4cb003bded4a9c66f20fac5c0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  doesKnockack: 0
   explosiveDamage: 0
   explosivePower: 5
   explosiveRadius: 5
   explosiveUpforce: 1
---- !u!54 &2593214770391877419
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4398247516364252563}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  fuse: 10
 --- !u!114 &4875301230870988602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,10 +219,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abfaf4cb003bded4a9c66f20fac5c0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  doesKnockack: 0
   explosiveDamage: 20
-  explosivePower: 5
+  explosivePower: 13.97
   explosiveRadius: 5
   explosiveUpforce: 1
+  fuse: 3
 --- !u!1 &5553433981197804893
 GameObject:
   m_ObjectHideFlags: 0
