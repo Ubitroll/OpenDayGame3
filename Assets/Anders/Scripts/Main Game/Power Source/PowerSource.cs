@@ -27,7 +27,8 @@ public class PowerSource : MonoBehaviour
             {
                 HasExploded = true;
 
-                Instantiate(Explosion, this.transform);               
+                Instantiate(Explosion, this.transform);
+                GameObject Instance = Instantiate(Explosion, this.transform.position, Quaternion.identity) as GameObject;
             }
             else
             {

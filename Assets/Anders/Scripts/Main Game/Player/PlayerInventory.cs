@@ -7,7 +7,7 @@ public class PlayerInventory : MonoBehaviour
 {
     public List<BaseItem> Inventory = new List<BaseItem>();
 
-    public List<Image> InventoryIcon = new List<Image>();
+    public List<Sprite> InventoryIcon = new List<Sprite>();
 
     public int MaxInventoryCap;
 
@@ -33,15 +33,20 @@ public class PlayerInventory : MonoBehaviour
 
     #endregion
     public void SortInventory()
-    {
-        for (int i = 0; i < Inventory.Count; i++)
-        {
-            InventoryIcon[i].sprite = Inventory[i].ItemIcon;
-            InventoryIcon[i].color = new Color(1, 1, 1, 1);
-        }
-        for (int i = Inventory.Count; i < InventoryIcon.Count; i++)
-        {
-            InventoryIcon[i].color = new Color(1, 1, 1, 0);
-        }
+    { 
+       for(int i = 0; i < Inventory.Count; i++)
+       {
+            InventoryIcon[i] = Inventory[i].ItemIcon;
+            GetComponent<ShopManagerv2>().InventoryIcons[i].sprite = InventoryIcon[i];
+       }
+
+       for(int i = Inventory.Count; i < GetComponent<ShopManagerv2>().InventoryIcons.Length; i++)
+       {
+            GetComponent<ShopManagerv2>().InventoryIcons[i].sprite = null;
+            GetComponent<ShopManagerv2>().InventoryIcons[i].color = new Color(1,1,1,0);
+       }
+
+        GameObject Player = GameObject.FindGameObjectWithTag("Player");
+        Player.GetComponent<PlayerInput>().ApplyItems();
     }
 }

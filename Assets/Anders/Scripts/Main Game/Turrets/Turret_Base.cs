@@ -106,8 +106,18 @@ public class Turret_Base : MonoBehaviour
 
             if(DetectedEnemies[0].gameObject.tag == "Minion")
             {
-                DetectedEnemies[0].GetComponent<Minion>().Health -= 1;
+                DetectedEnemies[0].GetComponent<Minion>().Health -= 5;
                 if(DetectedEnemies[0].GetComponent<Minion>().Health <= 0)
+                {
+                    DetectedEnemies.RemoveAt(0);
+                    ResetTurret();
+                }
+            }
+
+            if (DetectedEnemies[0].gameObject.tag == "Player")
+            {
+                DetectedEnemies[0].GetComponent<PlayerInput>().CurrentHealth -= 5;
+                if (DetectedEnemies[0].GetComponent<PlayerInput>().CurrentHealth <= 0)
                 {
                     DetectedEnemies.RemoveAt(0);
                     ResetTurret();
@@ -137,7 +147,8 @@ public class Turret_Base : MonoBehaviour
                             Instantiate(UsingParticles[1], TurretFirePoint.transform);
 
                             beamStart = Instantiate(beamStartPrefab, TurretFirePoint.transform);
-                            beamEnd = Instantiate(beamEndPrefab, DetectedEnemies[0].transform);
+                            //beamEnd = Instantiate(beamEndPrefab, DetectedEnemies[0].transform); 
+                            beamEnd = Instantiate(beamEndPrefab, DetectedEnemies[0].transform.position, Quaternion.identity) as GameObject; //Used to ignore the scale of characters as they aren't uniform scaled.
                             beam = Instantiate(beamLineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                             line = beam.GetComponent<LineRenderer>();
                         }

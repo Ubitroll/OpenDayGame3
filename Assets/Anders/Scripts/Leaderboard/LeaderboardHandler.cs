@@ -11,7 +11,7 @@ public class LeaderboardHandler : MonoBehaviour
     public List<string> PlayerNames = new List<string>();
     public List<int> PlayerScores = new List<int>();
 
-    public GameObject WonEffects, LostEffects, ConditionPanel, LeaderboardPanel;
+    public GameObject WonEffects, LostEffects, WinPanel, LostPanel, LeaderboardPanel;
 
     public Text Score, Condition;
 
@@ -24,7 +24,7 @@ public class LeaderboardHandler : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         State = 0;
         LoadLeaderboardValues();
         LoadLeaderboard();
@@ -32,15 +32,13 @@ public class LeaderboardHandler : MonoBehaviour
         if (DataTransferer.Instance.HasWon)
         {
             WonEffects.SetActive(true);
-            Condition.text = "Victory!";
+            WinPanel.SetActive(true);
         }
         else
         {
             LostEffects.SetActive(true);
-            Condition.text = "Defeat!";
+            LostPanel.SetActive(true);
         }
-
-        ConditionPanel.SetActive(true);
 
         Score.text = "Score : " + DataTransferer.Instance.CurrentPlayerScore.ToString();
     }
@@ -48,8 +46,9 @@ public class LeaderboardHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown("joystick button 0"))
-        {           
+        if(Input.GetKeyDown("joystick button 0") && HasPressed == false)
+        {
+            HasPressed = true;
             Continue();
         }
         if (Input.GetKeyUp("joystick button 0"))
@@ -62,7 +61,7 @@ public class LeaderboardHandler : MonoBehaviour
     {
         for (int i = 0; i < PlayerNames.Count; i++)
         {
-            HighScoreSlots[i].text = PlayerNames[i] + " : " + PlayerScores[i].ToString();
+            HighScoreSlots[i].text = "Score : " + PlayerScores[i].ToString() + " " + PlayerNames[i];
         }
     }
     void SortHighscore()
@@ -96,7 +95,6 @@ public class LeaderboardHandler : MonoBehaviour
             HighScoreSlots[i].text = PlayerNames[i] + " : " + PlayerScores[i].ToString();
         }
     }
-
     void Continue()
     {
         if (!HasPressed)
@@ -109,7 +107,6 @@ public class LeaderboardHandler : MonoBehaviour
             }
             if (State == 1)
             {
-                ConditionPanel.SetActive(false);
                 LeaderboardPanel.SetActive(true);
                 State++;
             }
@@ -121,8 +118,6 @@ public class LeaderboardHandler : MonoBehaviour
                 DataTransferer.Instance.CurrentPlayerName = "";
                 DataTransferer.Instance.PlayerChoice = null;
                 DataTransferer.Instance.AI_1_Choice = null;
-                DataTransferer.Instance.AI_2_Choice = null;
-                DataTransferer.Instance.AI_3_Choice = null;
 
                 SceneManager.LoadScene("MainMenu"); //Looping game by heading to main menu.
             }
@@ -136,7 +131,6 @@ public class LeaderboardHandler : MonoBehaviour
             PlayerPrefs.GetString("PlayerName" + i, PlayerNames[i]);
         }
     }
-
     void SaveLeaderboard()
     {
         for(int i = 0; i < PlayerScores.Count; i++)

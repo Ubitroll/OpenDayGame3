@@ -29,7 +29,7 @@ public class Stalls : MonoBehaviour
             {
                 GameObject Player = GameObject.FindGameObjectWithTag("Player");
                 Player.GetComponent<PlayerInput>().enabled = false;
-                BaseShopUI.SetActive(true);
+                BaseShopUI.GetComponent<ShopManagerv2>().EnterShop();
             }
         }
     }

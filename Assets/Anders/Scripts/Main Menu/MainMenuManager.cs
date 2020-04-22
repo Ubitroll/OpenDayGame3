@@ -8,21 +8,31 @@ public class MainMenuManager : MonoBehaviour
 {
     public GameObject InformationForPanelMeeting;
 
-    public GameObject[] MainButtons = new GameObject[3];
-    public GameObject[] HeroSelectionUI = new GameObject[3];
-    public GameObject[] SelectedHeroUI = new GameObject[3];
-    public GameObject[] HeroButtons = new GameObject[4];
+    public Animator[] MainMenuElements = new Animator[4];
+    public Animator[] HeroSelectionElements = new Animator[3];
 
-    public List<GameObject> CharactersNotSelected = new List<GameObject>(4);
+    public GameObject[] MainButtons = new GameObject[3];
+    public GameObject HeroSelectionUI, MainMenuUI;
+
+    public GameObject[] HeroesAsPlayer = new GameObject[3];
+    public GameObject[] HeroesAsAI = new GameObject[3];
+
+    public GameObject PlayerHeroIcon, EnemyHeroIcon;
+
+    public GameObject[] HeroIcons = new GameObject[3];
+
+    //public List<GameObject> CharactersNotSelected = new List<GameObject>(4);
 
     public float PickTimer;
     public bool CountToStart;
     public Text Timer;
 
+    public int AISelection;
+
     public int CurrentButtonIndex;
 
     [SerializeField]
-    private bool HasClickedMain, LoadHeroSelection, Pressed;
+    private bool HasClickedMain, LoadHeroSelection, Pressed, PressA;
 
     private string moveX;
     private string moveY;
@@ -36,6 +46,12 @@ public class MainMenuManager : MonoBehaviour
     private string dPadLeftRight;
     private string select;
     private string pause;
+
+    private void Awake()
+    {
+        QualitySettings.vSyncCount = 0;  // VSync must be disabled
+        Application.targetFrameRate = 60;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -47,19 +63,24 @@ public class MainMenuManager : MonoBehaviour
         aButton = "C" + "A";
         bButton = "C" + "B";
         xButton = "C" + "X";
-        yButton = "C" +  "Y";
+        yButton = "C" + "Y";
         dPadUpDown = "C" + "DpadUD";
         dPadLeftRight = "C" + "DpadLR";
         select = "C" + "Select";
         pause = "C" + "Pause";
+
+        CurrentButtonIndex = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        #region SelectionTimer
+
         if (LoadHeroSelection)
         {
-            if(CountToStart != true)
+            if (CountToStart != true)
             {
                 PickTimer -= Time.fixedDeltaTime;
                 string minutes = Mathf.Floor(PickTimer / 60).ToString("00");
@@ -78,178 +99,16 @@ public class MainMenuManager : MonoBehaviour
             {
                 PickTimer -= Time.fixedDeltaTime;
                 Timer.text = ((int)PickTimer).ToString();
-                if(PickTimer <= 0)
+                if (PickTimer <= 0)
                 {
-                    SceneManager.LoadScene("MainGame");
-                }
-            }
-        }        
-
-        #region UI Handlers
-
-        if (HasClickedMain)
-        {
-            if(MainButtons[0].transform.localPosition.x < -165)
-            {
-                MainButtons[0].transform.Translate(20, 0, 0);
-                if(MainButtons[0].transform.localPosition.x > -165)
-                {
-                    MainButtons[0].transform.localPosition = new Vector3(-165, 1200, 0);
-                }
-            }
-            if (MainButtons[1].transform.localPosition.x > -780)
-            {
-                MainButtons[1].transform.Translate(-20, 0, 0);
-                if (MainButtons[1].transform.localPosition.x < -780)
-                {
-                    MainButtons[1].transform.localPosition = new Vector3(-780, -1380, 0);
-                }
-            }
-            if (MainButtons[2].transform.localPosition.x < 1565)
-            {
-                MainButtons[2].transform.Translate(20, 0, 0);
-                if (MainButtons[2].transform.localPosition.x > 1565)
-                {
-                    MainButtons[2].transform.localPosition = new Vector3(1565, 1100, 0);
+                    SceneManager.LoadScene("Map Prototype v2");
                 }
             }
         }
 
-        if (LoadHeroSelection)
-        {
+        #endregion
 
-            InformationForPanelMeeting.SetActive(true);
-
-            #region UI Handler
-            if (HeroSelectionUI[0].transform.localPosition.x < -720)
-            {
-                HeroSelectionUI[0].transform.Translate(20, 0, 0);
-                if(HeroSelectionUI[0].transform.localPosition.x > -720)
-                {
-                    HeroSelectionUI[0].transform.localPosition = new Vector3(-720, 0, 0);
-                }
-            }
-
-            if (HeroSelectionUI[1].transform.localPosition.y > 340)
-            {
-                HeroSelectionUI[1].transform.Translate(0, -20, 0);
-                if (HeroSelectionUI[1].transform.localPosition.y < 340)
-                {
-                    HeroSelectionUI[1].transform.localPosition = new Vector3(70, 340, 0);
-                }
-            }
-
-            if (HeroSelectionUI[2].transform.localPosition.x > 895)
-            {
-                HeroSelectionUI[2].transform.Translate(20, 0, 0);
-                if (HeroSelectionUI[2].transform.localPosition.x < 895)
-                {
-                    HeroSelectionUI[2].transform.localPosition = new Vector3(895, 0, 0);
-                }
-            }
-
-            #endregion
-
-            if (Input.GetAxis("C1DpadUD") > 0 && !Pressed)
-            {
-                Pressed = true;
-                CurrentButtonIndex--;
-                if (CurrentButtonIndex < 0)
-                {
-                    CurrentButtonIndex = 3;
-                }
-            }
-            if (Input.GetAxis("C1DpadUD") < 0 && !Pressed)
-            {
-                Pressed = true;
-                CurrentButtonIndex++;
-                if (CurrentButtonIndex > 3)
-                {
-                    CurrentButtonIndex = 0;
-                }
-            }
-            if (Input.GetAxis("C1DpadUD") == 0)
-            {
-                Pressed = false;
-            }
-            if (Input.GetKeyDown("joystick button 0"))
-            {
-                DataTransferer.Instance.PlayerChoice = CharactersNotSelected[CurrentButtonIndex];
-
-                CharactersNotSelected.RemoveAt(CurrentButtonIndex);
-
-                for (int i = 0; i < CharactersNotSelected.Count; i++)
-                {
-                    Debug.Log(i);
-                    if (DataTransferer.Instance.AI_1_Choice == null)
-                    {
-                        int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                        DataTransferer.Instance.AI_1_Choice = CharactersNotSelected[RandomChoice];
-                        CharactersNotSelected.RemoveAt(RandomChoice);
-                        i = 0;
-                    }
-                    //if (DataTransferer.Instance.AI_2_Choice == null)
-                    //{
-                    //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                    //    DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
-                    //    CharactersNotSelected.RemoveAt(RandomChoice);
-                    //    i = 0;
-                    //}
-                    //if (DataTransferer.Instance.AI_3_Choice == null)
-                    //{
-                    //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                    //    DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
-                    //    CharactersNotSelected.RemoveAt(RandomChoice);
-                    //    i = 0;
-                    //}
-                }
-
-                InitializeGame();    
-            }
-
-            #region ButtonHandler
-
-            switch (CurrentButtonIndex)
-            {
-                case 0:
-
-                    HeroButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    HeroButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[2].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[3].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-
-                    break;
-
-                case 1:
-
-                    HeroButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    HeroButtons[2].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[3].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-
-                    break;
-
-                case 2:
-
-                    HeroButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[2].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    HeroButtons[3].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-
-                    break;
-
-                case 3:
-
-                    HeroButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[2].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
-                    HeroButtons[3].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-
-                    break;
-            }
-
-            #endregion
-        }
+        #region MainOptionsHandler
 
         if (!HasClickedMain)
         {
@@ -257,45 +116,61 @@ public class MainMenuManager : MonoBehaviour
             {
                 Pressed = true;
                 CurrentButtonIndex++;
-                if (CurrentButtonIndex > 1)
+                if (CurrentButtonIndex > 2)
                 {
-                    CurrentButtonIndex = -1;
+                    CurrentButtonIndex = 0;
                 }
             }
             if (Input.GetAxis("C1DpadLR") < 0 && !Pressed)
             {
                 Pressed = true;
                 CurrentButtonIndex--;
-                if (CurrentButtonIndex < -1)
+                if (CurrentButtonIndex < 0)
                 {
-                    CurrentButtonIndex = 1;
+                    CurrentButtonIndex = 2;
                 }
             }
             if (Input.GetAxis("C1DpadLR") == 0)
             {
                 Pressed = false;
             }
-            if (Input.GetKeyDown("joystick button 0"))
+            if (Input.GetKeyDown("joystick button 0") && !PressA)
             {
+                PressA = true;
+
                 HasClickedMain = true;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    MainMenuElements[i].SetBool("IsClicked", true);
+                    Debug.Log(i);
+                }
 
                 switch (CurrentButtonIndex)
                 {
-                    case -1:
-
-                        break;
-
                     case 0:
-
-                        LoadHeroSelection = true;
-                        CurrentButtonIndex = 0;
 
                         break;
 
                     case 1:
 
+                        Debug.Log("Working");
+
+                        LoadHeroSelection = true;
+
+                        LoadHeroSelectionUI();
+
+                        break;
+
+                    case 2:
+
                         break;
                 }
+            }
+
+            if (!Input.GetKeyDown("joystick button 0"))
+            {
+                PressA = false;
             }
         }
 
@@ -303,7 +178,7 @@ public class MainMenuManager : MonoBehaviour
 
         switch (CurrentButtonIndex)
         {
-            case -1:
+            case 0:
 
                 MainButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 1);
                 MainButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
@@ -311,7 +186,7 @@ public class MainMenuManager : MonoBehaviour
 
                 break;
 
-            case 0:
+            case 1:
 
                 MainButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
                 MainButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 1);
@@ -319,7 +194,7 @@ public class MainMenuManager : MonoBehaviour
 
                 break;
 
-            case 1:
+            case 2:
 
                 MainButtons[0].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
                 MainButtons[1].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
@@ -331,82 +206,92 @@ public class MainMenuManager : MonoBehaviour
         #endregion
 
         #endregion
-    }
 
-    void InitializeGame()
-    {
-        CountToStart = true;
-        PickTimer = 3;
+        #region HeroSelectionHandler
 
-        SelectedHeroUI[0].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-        SelectedHeroUI[0].GetComponent<Image>().sprite = DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().CharacterIcon;
-        //SelectedHeroUI[1].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-        //SelectedHeroUI[1].GetComponent<Image>().sprite = DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().CharacterIcon;
-        SelectedHeroUI[2].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-        SelectedHeroUI[2].GetComponent<Image>().sprite = DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().CharacterIcon;
-        //SelectedHeroUI[3].GetComponent<Image>().color = new Color(1, 1, 1, 1);
-        //SelectedHeroUI[3].GetComponent<Image>().sprite = DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().CharacterIcon;
-
-        SetPlayer();
-    }
-
-    void SetPlayer()
-    {
-        DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().enabled = false;
-        DataTransferer.Instance.PlayerChoice.GetComponent<PlayerInput>().enabled = true;
-        DataTransferer.Instance.PlayerChoice.tag = "Player";
-
-
-        DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().enabled = true; //Ensures if anything is saved when player uses it then it will revert back to default.
-        DataTransferer.Instance.AI_1_Choice.GetComponent<PlayerInput>().enabled = false;
-        DataTransferer.Instance.AI_1_Choice.tag = "Character";
-    }
-
-    void RandomPick()
-    {
-        for (int i = 0; i < CharactersNotSelected.Count; i++)
+        if (LoadHeroSelection)
         {
-            if (DataTransferer.Instance.PlayerChoice == null)
+            if (Input.GetAxis("C1DpadUD") > 0 && !Pressed)
             {
-                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                DataTransferer.Instance.PlayerChoice = CharactersNotSelected[RandomChoice];
-                CharactersNotSelected.RemoveAt(RandomChoice);
-                i = 0;
+                Pressed = true;
+                CurrentButtonIndex--;
+                if (CurrentButtonIndex < 0)
+                {
+                    CurrentButtonIndex = 2;
+                }
             }
-            if (DataTransferer.Instance.AI_1_Choice == null)
+            if (Input.GetAxis("C1DpadUD") < 0 && !Pressed)
             {
-                int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-                DataTransferer.Instance.AI_1_Choice = CharactersNotSelected[RandomChoice];
-                CharactersNotSelected.RemoveAt(RandomChoice);
-                i = 0;
+                Pressed = true;
+                CurrentButtonIndex++;
+                if (CurrentButtonIndex > 2)
+                {
+                    CurrentButtonIndex = 0;
+                }
             }
-            //if (DataTransferer.Instance.AI_2_Choice == null) //Scalability here!
-            //{
-            //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-            //    DataTransferer.Instance.AI_2_Choice = CharactersNotSelected[RandomChoice];
-            //    CharactersNotSelected.RemoveAt(RandomChoice);
-            //    i = 0;
-            //}
-            //if (DataTransferer.Instance.AI_3_Choice == null)
-            //{
-            //    int RandomChoice = Random.Range(0, CharactersNotSelected.Count);
-            //    DataTransferer.Instance.AI_3_Choice = CharactersNotSelected[RandomChoice];
-            //    CharactersNotSelected.RemoveAt(RandomChoice);
-            //    i = 0;
-            //}
+            if (Input.GetAxis("C1DpadUD") == 0)
+            {
+                Pressed = false;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (CurrentButtonIndex == i)
+                {
+                    HeroIcons[i].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                }
+                else
+                {
+                    HeroIcons[i].GetComponent<Image>().color = new Color(1, 1, 1, 0.3f);
+                }
+            }
+
+            if (Input.GetKeyDown("joystick button 0") && !PressA) //Adding the right gameobjects to the data transferer.
+            {
+                PressA = true;
+
+                DataTransferer.Instance.PlayerChoice = HeroesAsPlayer[CurrentButtonIndex];
+                AISelection = Random.Range(0, 3);
+                DataTransferer.Instance.AI_1_Choice = HeroesAsAI[AISelection];
+
+                InitializeGame();
+            }
+
+            if (!Input.GetKeyDown("joystick button 0"))
+            {
+                PressA = false;
+            }
+
         }
-    }
-    public void Clicked(string Option)
-    {
-        HasClickedMain = true;
 
-        switch (Option)
+            #endregion
+       
+        void LoadHeroSelectionUI()
         {
-            case "Play":
+            HeroSelectionUI.SetActive(true);
 
-                LoadHeroSelection = true;
+            for (int i = 0; i < HeroSelectionElements.Length; i++)
+            {
+                HeroSelectionElements[i].SetBool("LoadHeroSelection", true);
+            }
+        }
 
-                break;
+        void InitializeGame()
+        {
+            CountToStart = true;
+            PickTimer = 3;
+
+            PlayerHeroIcon.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            PlayerHeroIcon.GetComponent<Image>().sprite = HeroIcons[CurrentButtonIndex].GetComponent<Image>().sprite;
+            EnemyHeroIcon.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            EnemyHeroIcon.GetComponent<Image>().sprite = HeroIcons[AISelection].GetComponent<Image>().sprite;
+        }
+
+        void RandomPick() //Adding the right gameobjects to the data transferer.
+        {
+            DataTransferer.Instance.PlayerChoice = HeroesAsPlayer[Random.Range(0, 2)];
+            AISelection = Random.Range(0, 3);
+            DataTransferer.Instance.AI_1_Choice = HeroesAsAI[AISelection];
         }
     }
 }

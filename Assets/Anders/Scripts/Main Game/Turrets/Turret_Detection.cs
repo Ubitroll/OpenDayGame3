@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class Turret_Detection : MonoBehaviour
 {
+    public GameObject ParentTurret;
     private void OnTriggerEnter(Collider collision)
     {
+        Debug.Log("Detection");
         if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion" || collision.gameObject.tag == "Player")
         {
-            if (collision.gameObject.GetComponent<Team_Assign>().Team != this.gameObject.GetComponentInParent<Team_Assign>().Team)
+            Debug.Log("Detected : " + collision.gameObject.tag);
+            if (collision.gameObject.GetComponent<Team_Assign>().Team != ParentTurret.GetComponent<Team_Assign>().Team)
             {
-                this.gameObject.GetComponentInParent<Turret_Base>().DetectedEnemies.Add(collision.gameObject);
+                Debug.Log("IsEnemy");
+                ParentTurret.GetComponent<Turret_Base>().DetectedEnemies.Add(collision.gameObject);
             }
         }
     }
@@ -18,10 +22,10 @@ public class Turret_Detection : MonoBehaviour
     {
         if (collision.gameObject.tag == "Character" || collision.gameObject.tag == "Minion" || collision.gameObject.tag == "Player")
         {
-            if (collision.gameObject.GetComponent<Team_Assign>().Team != this.gameObject.GetComponentInParent<Team_Assign>().Team)
+            if (collision.gameObject.GetComponent<Team_Assign>().Team != ParentTurret.GetComponent<Team_Assign>().Team)
             {
-                this.gameObject.GetComponentInParent<Turret_Base>().DetectedEnemies.Remove(collision.gameObject);
-                this.gameObject.GetComponentInParent<Turret_Base>().ResetTurret();
+                ParentTurret.GetComponent<Turret_Base>().DetectedEnemies.Remove(collision.gameObject);
+                ParentTurret.GetComponent<Turret_Base>().ResetTurret();
             }
         }        
     }

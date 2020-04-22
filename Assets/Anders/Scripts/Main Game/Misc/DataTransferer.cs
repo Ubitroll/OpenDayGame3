@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class DataTransferer : MonoBehaviour
 {
-    public GameObject PlayerChoice, AI_1_Choice, AI_2_Choice, AI_3_Choice;
+    public GameObject PlayerChoice, AI_1_Choice;
+    public int PlayersHero; //To trigger UI changes.
 
     public int CurrentPlayerScore;
     public string CurrentPlayerName;

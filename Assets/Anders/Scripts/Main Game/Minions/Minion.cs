@@ -10,31 +10,26 @@ public class Minion : MonoBehaviour
 
     public int Action_State;
 
-    public float Speed;
     private float Action = 0;
-    private float Death_Timer;
     [SerializeField]
     private float Distance;
     public GameObject Target;
 
-
-    public bool Team;
-
+    [SerializeField]
     private Animator Controller;
 
+    [SerializeField]
     private NavMeshAgent Agent;
 
     public List<GameObject> DetectedEnemies = new List<GameObject>();
 
     public GameObject EnemyCrystal;
 
+    public GameObject ThisMinion;
+
 
     private void Start()
     {
-        Death_Timer = 2.3f;
-        Controller = this.gameObject.GetComponent<Animator>();
-
-        Agent = this.gameObject.GetComponent<NavMeshAgent>();
         Health = 200;
         Damage = 15;
 
@@ -57,11 +52,15 @@ public class Minion : MonoBehaviour
         {
             case 0:
 
-                Controller.SetFloat("Action", 0);
+                Controller.SetBool("IsAttacking", false);
 
-                if(DetectedEnemies.Count == 0)
+                Agent.isStopped = false;
+
+                if (DetectedEnemies.Count == 0)
                 {
-                    if(this.gameObject.GetComponent<Team_Assign>().Team == true)
+                    Target = EnemyCrystal;
+
+                    if (this.gameObject.GetComponent<Team_Assign>().Team == true)
                     {
                         Agent.SetDestination(Enemy_Crystal_Singleton.Instance.gameObject.transform.position);
                     }
@@ -72,11 +71,13 @@ public class Minion : MonoBehaviour
                 }
                 else
                 {
+                    Target = DetectedEnemies[0];
+
                     Agent.SetDestination(Target.transform.position);
 
                     Distance = Vector3.Distance(this.gameObject.transform.position, Target.transform.position);
 
-                    if(Distance <= Agent.stoppingDistance)
+                    if(Distance <= 4.2)
                     { 
                         Action_State = 1;
                     }
@@ -85,8 +86,10 @@ public class Minion : MonoBehaviour
                 break;
 
             case 1:
+               
+                Agent.isStopped = true;
 
-                Controller.SetFloat("Action", 0.33f);
+                Controller.SetBool("IsAttacking", true);
                 
                 transform.LookAt(Target.transform);
 
@@ -95,7 +98,7 @@ public class Minion : MonoBehaviour
             case 3:
 
                 Agent.isStopped = true;
-                Controller.SetFloat("Action", 1f);
+                Controller.SetBool("IsDead", true);
 
                 break;
         }
@@ -107,20 +110,19 @@ public class Minion : MonoBehaviour
     {
         for (int i = 0; i < DetectedEnemies.Count; i++)
         {
-            if (DetectedEnemies[i] == false)
+            if (DetectedEnemies[i] == null)
             {
                 DetectedEnemies.RemoveAt(i);
             }
         }
-
-        if(Target == null)
+        if(Target == null && DetectedEnemies.Count != 0)
         {
-            Target = EnemyCrystal;
+            Target = DetectedEnemies[0];
         }
 
-        if(DetectedEnemies.Count != 0)
+        if (DetectedEnemies.Count != 0)
         {
-            for(int i = 0; i < DetectedEnemies.Count; i++)
+            for (int i = 0; i < DetectedEnemies.Count; i++)
             {
                 if (Vector3.Distance(this.gameObject.transform.position, DetectedEnemies[i].transform.position) < Vector3.Distance(this.gameObject.transform.position, Target.transform.position))
                 {
@@ -135,7 +137,7 @@ public class Minion : MonoBehaviour
             {
                 DetectedEnemies.RemoveAt(0);
             }
-        }
+        }       
 
         if (DetectedEnemies.Count == 0 || DetectedEnemies == null)
         {
@@ -146,23 +148,11 @@ public class Minion : MonoBehaviour
         {
             Action_State = 3;
         }
-
-        if(Target != null)
-        {
-            if (Target.tag == "PowerSource")
-            {
-                Agent.stoppingDistance = 2;
-            }
-            else
-            {
-                Agent.stoppingDistance = 3;
-            }
-        }
     }
 
     public void Death()
     {
-        Destroy(this.gameObject);
+        Destroy(ThisMinion);
     }
 
     void CheckTargetHealth()

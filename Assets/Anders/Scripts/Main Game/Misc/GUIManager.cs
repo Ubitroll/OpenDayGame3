@@ -25,13 +25,21 @@ public class GUIManager : MonoBehaviour
     {
         if (IsPlaying)
         {
-            GameTimer -= Time.fixedDeltaTime;
+            GameTimer -= Time.deltaTime;
+            Gold.text = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>().Gold.ToString(); 
         }
 
-        Gold.text = Player.GetComponent<Player>().Gold.ToString();
+        //Gold.text = Player.GetComponent<Player>().Gold.ToString();
 
         string minutes = Mathf.Floor(GameTimer / 60).ToString("00");
+        
         string seconds = (GameTimer % 60).ToString("00");
+
+        if (seconds == "60")
+        {
+            minutes = (Mathf.Floor(GameTimer / 60) + 1).ToString("00");
+            seconds = "00";
+        }
 
         Timer.text = (string.Format("{0}:{1}", minutes, seconds));
     }

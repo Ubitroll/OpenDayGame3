@@ -17,11 +17,11 @@ public class Gold_Generation : MonoBehaviour
     {
         if(Timer > 0)
         {
-            Timer -= Time.fixedUnscaledDeltaTime;
+            Timer -= Time.deltaTime;
         }
         if(Timer <= 0)
         {
-            this.gameObject.GetComponentInParent<Player>().Gold += Passive_Gold_Income;
+            this.gameObject.GetComponentInParent<PlayerInput>().Gold += Passive_Gold_Income;
             Timer = 1;
         }
     }

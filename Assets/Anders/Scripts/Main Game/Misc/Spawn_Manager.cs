@@ -36,84 +36,81 @@ public class Spawn_Manager : MonoBehaviour
 
         if (AssignCrystalSpawn == 1)
         {
-            GameObject Good_Crystal = Instantiate(GoodCrystal, new Vector3(RightCrystalSpawn.transform.position.x, RightCrystalSpawn.transform.position.y, RightCrystalSpawn.transform.position.z), Quaternion.identity) as GameObject;
-            GameObject Bad_Crystal = Instantiate(BadCrystal, new Vector3(LeftCrystalSpawn.transform.position.x, LeftCrystalSpawn.transform.position.y, LeftCrystalSpawn.transform.position.z), Quaternion.identity) as GameObject;
+            GameObject Good_Crystal = Instantiate(GoodCrystal, new Vector3(RightCrystalSpawn.transform.position.x, RightCrystalSpawn.transform.position.y, RightCrystalSpawn.transform.position.z), Quaternion.Euler(0, 90, 0)) as GameObject;
+            GameObject Bad_Crystal = Instantiate(BadCrystal, new Vector3(LeftCrystalSpawn.transform.position.x, LeftCrystalSpawn.transform.position.y, LeftCrystalSpawn.transform.position.z), Quaternion.Euler(0, -90, 0)) as GameObject;
 
             RightTurrets.transform.GetComponent<Team_Assign>().Team = true;
-            //RightTurrets.transform.GetChild(1).GetComponent<Team_Assign>().Team = true;
-            //RightTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = true;
 
             LeftTurrets.transform.GetComponent<Team_Assign>().Team = false;
-            //LeftTurrets.transform.GetChild(1).GetComponent<Team_Assign>().Team = false;
-            //LeftTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = false;
+
 
             RightMinionSpawn.GetComponent<Team_Assign>().Team = true; //Only need to declare right spawner for the minions to work it out.
 
             RightBase.GetComponent<Team_Assign>().Team = true;
 
-            DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            //DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
-            //DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
-            //DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
+            DataTransferer.Instance.PlayerChoice.GetComponent<PlayerInput>().HomeBase = RightBase;
+            // DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
         }
-        if(AssignCrystalSpawn == 0)
+        if (AssignCrystalSpawn == 0)
         {
-            GameObject Good_Crystal = Instantiate(GoodCrystal, new Vector3(LeftCrystalSpawn.transform.position.x, LeftCrystalSpawn.transform.position.y, LeftCrystalSpawn.transform.position.z), Quaternion.identity) as GameObject;
-            GameObject Bad_Crystal = Instantiate(BadCrystal, new Vector3(RightCrystalSpawn.transform.position.x, RightCrystalSpawn.transform.position.y, RightCrystalSpawn.transform.position.z), Quaternion.identity) as GameObject;
+            GameObject Good_Crystal = Instantiate(GoodCrystal, new Vector3(LeftCrystalSpawn.transform.position.x, LeftCrystalSpawn.transform.position.y, LeftCrystalSpawn.transform.position.z), Quaternion.Euler(0,-90,0)) as GameObject;
+            GameObject Bad_Crystal = Instantiate(BadCrystal, new Vector3(RightCrystalSpawn.transform.position.x, RightCrystalSpawn.transform.position.y, RightCrystalSpawn.transform.position.z), Quaternion.Euler(0, 90, 0)) as GameObject;
 
             RightTurrets.transform.GetComponent<Team_Assign>().Team = false;
-            //RightTurrets.transform.GetChild(1).GetComponent<Team_Assign>().Team = false;
-            //RightTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = false;
 
             LeftTurrets.transform.GetComponent<Team_Assign>().Team = true;
-            //LeftTurrets.transform.GetChild(1).GetComponent<Team_Assign>().Team = true;
-            //LeftTurrets.transform.GetChild(2).GetComponent<Team_Assign>().Team = true;
 
             RightMinionSpawn.GetComponent<Team_Assign>().Team = false; //Only need to declare right spawner for the minions to work it out.
 
             RightBase.GetComponent<Team_Assign>().Team = false;
 
-            DataTransferer.Instance.PlayerChoice.GetComponent<BaseCharacter>().HomeBase = LeftBase;
+            DataTransferer.Instance.PlayerChoice.GetComponent<PlayerInput>().HomeBase = LeftBase;
             //DataTransferer.Instance.AI_1_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            //DataTransferer.Instance.AI_2_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
-            //DataTransferer.Instance.AI_3_Choice.GetComponent<BaseCharacter>().HomeBase = RightBase;
         }
 
         DataTransferer.Instance.PlayerChoice.GetComponent<Team_Assign>().Team = true;
-        DataTransferer.Instance.AI_1_Choice.GetComponent<Team_Assign>().Team = false;
-        //DataTransferer.Instance.AI_2_Choice.GetComponent<Team_Assign>().Team = false;
-        //DataTransferer.Instance.AI_3_Choice.GetComponent<Team_Assign>().Team = false;
+        //DataTransferer.Instance.AI_1_Choice.GetComponent<Team_Assign>().Team = false;
     }
 
 
     void SpawnMinionWave()
     {
-        if (RightMinionSpawn.GetComponent<Team_Assign>().Team == true) //Figures out which side is good which is bad!
+        StartCoroutine(Spawn());
+    }
+
+    IEnumerator Spawn()
+    {
+        for(int i = 0; i < 3; i++) //Spawns upto 3 minions this can increase or decrease.
         {
-            GameObject Minion_Wave_Good = Instantiate(MinionWaveGood, new Vector3(RightMinionSpawn.transform.position.x, RightMinionSpawn.transform.position.y, RightMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
-            GameObject Minion_Wave_Bad = Instantiate(MinionWaveBad, new Vector3(LeftMinionSpawn.transform.position.x, LeftMinionSpawn.transform.position.y, LeftMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
-        }
-        else
-        {
-            GameObject Minion_Wave_Good = Instantiate(MinionWaveGood, new Vector3(LeftMinionSpawn.transform.position.x, LeftMinionSpawn.transform.position.y, LeftMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
-            GameObject Minion_Wave_Bad = Instantiate(MinionWaveBad, new Vector3(RightMinionSpawn.transform.position.x, RightMinionSpawn.transform.position.y, RightMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
+            if (RightMinionSpawn.GetComponent<Team_Assign>().Team == true) //Figures out which side is good which is bad!
+            {
+                GameObject Minion_Wave_Good = Instantiate(MinionWaveGood, new Vector3(RightMinionSpawn.transform.position.x, RightMinionSpawn.transform.position.y, RightMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
+                GameObject Minion_Wave_Bad = Instantiate(MinionWaveBad, new Vector3(LeftMinionSpawn.transform.position.x, LeftMinionSpawn.transform.position.y, LeftMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
+            }
+            else
+            {
+                GameObject Minion_Wave_Good = Instantiate(MinionWaveGood, new Vector3(LeftMinionSpawn.transform.position.x, LeftMinionSpawn.transform.position.y, LeftMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
+                GameObject Minion_Wave_Bad = Instantiate(MinionWaveBad, new Vector3(RightMinionSpawn.transform.position.x, RightMinionSpawn.transform.position.y, RightMinionSpawn.transform.position.z), Quaternion.identity) as GameObject;
+            }
+
+            yield return new WaitForSeconds(1); //Waits a second before spawning a new minion.
         }
     }
     void SpawnAllCharacters()
     {
+        Debug.Log("Spawning Characters");
+
         if(RightBase.GetComponent<Team_Assign>().Team == true)
         {
-            GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, LeftBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            Debug.Log("Spawning Characters Right");
+            GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, RightBase.transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
         }
         else
         {
-            GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, LeftBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance2 = Instantiate(DataTransferer.Instance.AI_2_Choice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
-            //GameObject Instance3 = Instantiate(DataTransferer.Instance.AI_3_Choice, RightBase.transform.GetChild(1).transform.position, Quaternion.identity) as GameObject;
+            Debug.Log("Spawning Characters left");
+            GameObject Instance = Instantiate(DataTransferer.Instance.PlayerChoice, LeftBase.transform.position, Quaternion.identity) as GameObject;
+            //GameObject Instance1 = Instantiate(DataTransferer.Instance.AI_1_Choice, RightBase.transform.GetChild(0).transform.position, Quaternion.identity) as GameObject;
         }
     }
 

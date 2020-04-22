@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: b595e7b18806c1c46a6721f8a2f141a5
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 300
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Days
+  fontNames:
+  - Days
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f9fa567ebeb6a514080927066da6e011, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Anders/Scenes/MainMenu.unity
     guid: 5190f930cc22ce1468554f645e6233b8
   - enabled: 1
-    path: Assets/Anders/Scenes/MainGame.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Anders/Scenes/Map Prototype/Map Prototype v2.unity
+    guid: ed2f0fcc2717f194eaf67a4f9292803b
   - enabled: 1
     path: Assets/Anders/Scenes/Leaderboard.unity
     guid: 891dff801fba9934ca2d5c914d676084
